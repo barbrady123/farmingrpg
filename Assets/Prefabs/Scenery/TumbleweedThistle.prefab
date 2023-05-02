@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 3013583605622887693}
   - component: {fileID: 8912362917427743808}
   - component: {fileID: 2387048871513542557}
+  - component: {fileID: -3887219912767106079}
+  - component: {fileID: -3433548294140476687}
   m_Layer: 0
   m_Name: TumbleweedThistle
   m_TagString: Untagged
@@ -98,7 +100,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.29203308}
+  m_Offset: {x: 0, y: 0.22167882}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -109,5 +111,43 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2, y: 0.58406615}
+  m_Size: {x: 2, y: 0.44335765}
   m_EdgeRadius: 0
+--- !u!61 &-3887219912767106079
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7724039604343128581}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 1.2238544}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0}
+    oldSize: {x: 2, y: 2}
+    newSize: {x: 2, y: 2}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 2, y: 1.5522912}
+  m_EdgeRadius: 0
+--- !u!114 &-3433548294140476687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7724039604343128581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0087352cc66fa2349842b0efe794e964, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
