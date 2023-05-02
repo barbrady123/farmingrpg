@@ -1,6 +1,6 @@
 public delegate void MovementDelegate(
-    float inputX,
-    float inputY,
+    float xInput,
+    float yInput,
     bool isWalking,
     bool isRunning,
     bool isIdle,

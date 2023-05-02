@@ -5,8 +5,8 @@ public static class EventHandler
 
     // Movement Event Call For Publishers
     public static void CallMovementEvent(
-        float inputX,
-        float inputY,
+        float xInput,
+        float yInput,
         bool isWalking,
         bool isRunning,
         bool isIdle,
@@ -36,8 +36,8 @@ public static class EventHandler
         if (EventHandler.MovementEvent != null)
         {
             MovementEvent(
-                inputX,
-                inputY,
+                xInput,
+                yInput,
                 isWalking,
                 isRunning,
                 isIdle,
