@@ -2,6 +2,12 @@ using UnityEngine;
 
 public static class Settings
 {
+    // Player Movement
+    public const float runningSpeed = 5.333f;
+
+    public const float walkingSpeed = 2.666f;
+
+    #region Animation Parameters
     public static int xInput = Animator.StringToHash(nameof(xInput));
 
     public static int yInput = Animator.StringToHash(nameof(yInput));
@@ -52,6 +58,7 @@ public static class Settings
     public static int idleUp = Animator.StringToHash(nameof(idleUp));
 
     public static int idleDown = Animator.StringToHash(nameof(idleDown));
+    #endregion
 
     static Settings()
     {
