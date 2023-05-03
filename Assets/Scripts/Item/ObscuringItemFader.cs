@@ -12,46 +12,43 @@ public class ObscuringItemFader : MonoBehaviour
         _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }
 
-    public void FadeOut()
-    {
-        StartCoroutine(FadeOutRoutine());
-    }
-
-    private IEnumerator FadeOutRoutine()
-    {
-        float currentAlpha = _spriteRenderer.color.a;
-        float diff;
-
-        do
-        {
-            diff = currentAlpha - Settings.targetAlpha;
-            currentAlpha = Mathf.Max(currentAlpha - (diff / Settings.fadeOutSeconds * Time.deltaTime), Settings.targetAlpha);
-            _spriteRenderer.color = new Color(1f, 1f, 1f, currentAlpha);
-            yield return null;
-        } while (diff > 0.01f);
-    }
-
     public void FadeIn()
     {
         StartCoroutine(FadeInRoutine());
     }
 
+    public void FadeOut()
+    {
+        StartCoroutine(FadeOutRoutine());
+    }
+
     private IEnumerator FadeInRoutine()
     {
         float currentAlpha = _spriteRenderer.color.a;
-        float diff;
+        float diff = 1f - currentAlpha;
 
-        // why is this not visually fading out...just showing the alpha at 1f at the end?
-        print("start");
-        do
+        while (1f - currentAlpha > 0.01f)
         {
-            diff = 1f - currentAlpha;
-            print($"diff:{diff}");
-            currentAlpha = Mathf.Min(currentAlpha + (diff / Settings.fadeInSeconds * Time.deltaTime), 1f);
+            currentAlpha = currentAlpha + diff / Settings.fadeInSeconds * Time.deltaTime;
             _spriteRenderer.color = new Color(1f, 1f, 1f, currentAlpha);
-            print($"alpha:{currentAlpha}");
             yield return null;
-        } while (diff > 0.01f);
-        print("done");
+        };
+
+        _spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+    }
+
+    private IEnumerator FadeOutRoutine()
+    {
+        float currentAlpha = _spriteRenderer.color.a;
+        float diff = currentAlpha - Settings.targetAlpha;
+
+        while (currentAlpha - Settings.targetAlpha > 0.01f)
+        {
+            currentAlpha = currentAlpha - diff / Settings.fadeOutSeconds * Time.deltaTime;
+            _spriteRenderer.color = new Color(1f, 1f, 1f, currentAlpha);
+            yield return null;
+        }
+
+        _spriteRenderer.color = new Color(1f, 1f, 1f, Settings.targetAlpha);
     }
 }

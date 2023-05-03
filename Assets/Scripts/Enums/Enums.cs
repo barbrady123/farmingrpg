@@ -17,3 +17,28 @@ public enum Direction
 
     None = 4
 }
+
+public enum ItemType
+{
+    Seed = 0,
+
+    Commodity = 1,
+
+    WateringTool = 2,
+
+    HoeingTool = 3,
+
+    ChoppingTool = 4,
+
+    BreakingTool = 5,
+
+    ReapingTool = 6,
+
+    CollectingTool = 7,
+
+    ReapableScenery = 8,
+
+    Furniture = 9,
+
+    None = 10
+}
