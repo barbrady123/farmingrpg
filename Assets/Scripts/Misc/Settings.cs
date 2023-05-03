@@ -14,6 +14,11 @@ public static class Settings
 
     public const float walkingSpeed = 2.666f;
 
+    // Inventory
+    public static int playerInitialInventoryCapacity = 24;
+
+    public static int playerMaximumInventoryCapacity = 48;
+
     #region Animation Parameters
     public static int xInput = Animator.StringToHash(nameof(xInput));
 

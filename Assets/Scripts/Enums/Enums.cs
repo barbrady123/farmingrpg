@@ -42,3 +42,10 @@ public enum ItemType
 
     None = 10
 }
+
+public enum InventoryLocation
+{
+    Player = 0,
+
+    Chest = 1
+}
