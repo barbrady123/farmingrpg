@@ -66,13 +66,19 @@ public class Player : SingletonMonobehavior<Player>
 
     private bool _playerInputIsDisabled = false;
 
+    private Camera _camera;
+
     public bool PlayerInputIsDisabled { get => _playerInputIsDisabled; set => _playerInputIsDisabled = value; }
+
+    public Vector3 GetViewportPosition() => _camera.WorldToViewportPoint(transform.position);
 
     protected override void Awake()
     {
         base.Awake();
 
         _rigidBody = GetComponent<Rigidbody2D>();
+
+        _camera = Camera.main;
     }
 
     private void Update()
