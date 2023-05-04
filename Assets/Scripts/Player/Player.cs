@@ -72,17 +72,39 @@ public class Player : SingletonMonobehavior<Player>
 
     public Vector3 GetViewportPosition() => _camera.WorldToViewportPoint(transform.position);
 
+    public void SetPlayerInputDisabled(bool isDisabled = true, bool resetMovementOnDisabled = true)
+    {
+        this.PlayerInputIsDisabled = isDisabled;
+
+        if (isDisabled && resetMovementOnDisabled)
+        {
+            ResetMovement();
+        }
+    }
+
+    private void ResetMovement()
+    {
+        _xInput = 0f;
+        _yInput = 0f;
+        _isRunning = false;
+        _isWalking = false;
+        _isIdle = true;
+        FireMovementEvent();
+    }
+
     protected override void Awake()
     {
         base.Awake();
 
         _rigidBody = GetComponent<Rigidbody2D>();
-
         _camera = Camera.main;
     }
 
     private void Update()
     {
+        if (this.PlayerInputIsDisabled)
+            return;
+
         #region Player Input
         ResetAnimationTriggers();
         PlayerMovementInput();

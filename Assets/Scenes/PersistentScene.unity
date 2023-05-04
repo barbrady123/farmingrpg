@@ -218,6 +218,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _slotNumber
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryBar
+      value: 
+      objectReference: {fileID: 1214884457}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryTextBoxPrefab
+      value: 
+      objectReference: {fileID: 303460695411629331, guid: 35b84ce116f1e464daf48cd998877419, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
 --- !u!224 &35011150 stripped
@@ -320,6 +332,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _slotNumber
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryBar
+      value: 
+      objectReference: {fileID: 1214884457}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryTextBoxPrefab
+      value: 
+      objectReference: {fileID: 303460695411629331, guid: 35b84ce116f1e464daf48cd998877419, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
 --- !u!224 &58683530 stripped
@@ -573,6 +597,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _slotNumber
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryBar
+      value: 
+      objectReference: {fileID: 1214884457}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryTextBoxPrefab
+      value: 
+      objectReference: {fileID: 303460695411629331, guid: 35b84ce116f1e464daf48cd998877419, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
 --- !u!224 &217963725 stripped
@@ -675,6 +711,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _slotNumber
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryBar
+      value: 
+      objectReference: {fileID: 1214884457}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryTextBoxPrefab
+      value: 
+      objectReference: {fileID: 303460695411629331, guid: 35b84ce116f1e464daf48cd998877419, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
 --- !u!224 &266136400 stripped
@@ -896,6 +944,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _slotNumber
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryBar
+      value: 
+      objectReference: {fileID: 1214884457}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryTextBoxPrefab
+      value: 
+      objectReference: {fileID: 303460695411629331, guid: 35b84ce116f1e464daf48cd998877419, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
 --- !u!224 &318271241 stripped
@@ -1368,6 +1428,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _slotNumber
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryBar
+      value: 
+      objectReference: {fileID: 1214884457}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryTextBoxPrefab
+      value: 
+      objectReference: {fileID: 303460695411629331, guid: 35b84ce116f1e464daf48cd998877419, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
 --- !u!224 &569762333 stripped
@@ -1657,6 +1729,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _slotNumber
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryBar
+      value: 
+      objectReference: {fileID: 1214884457}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryTextBoxPrefab
+      value: 
+      objectReference: {fileID: 303460695411629331, guid: 35b84ce116f1e464daf48cd998877419, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
 --- !u!224 &1017866950 stripped
@@ -2095,6 +2179,8 @@ MonoBehaviour:
   - {fileID: 1794753346}
   - {fileID: 1976866915}
   - {fileID: 1557381660}
+  InventoryBarDraggedItem: {fileID: 8906481428318312187, guid: 0ef1c01481436804abee6478777941fc, type: 3}
+  InventoryTextBoxGameObject: {fileID: 0}
 --- !u!1 &1452766869
 GameObject:
   m_ObjectHideFlags: 0
@@ -2274,6 +2360,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _slotNumber
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryBar
+      value: 
+      objectReference: {fileID: 1214884457}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryTextBoxPrefab
+      value: 
+      objectReference: {fileID: 303460695411629331, guid: 35b84ce116f1e464daf48cd998877419, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
 --- !u!224 &1515272964 stripped
@@ -2499,6 +2597,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _slotNumber
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryBar
+      value: 
+      objectReference: {fileID: 1214884457}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryTextBoxPrefab
+      value: 
+      objectReference: {fileID: 303460695411629331, guid: 35b84ce116f1e464daf48cd998877419, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
 --- !u!224 &1582483072 stripped
@@ -2742,6 +2852,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _slotNumber
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryBar
+      value: 
+      objectReference: {fileID: 1214884457}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryTextBoxPrefab
+      value: 
+      objectReference: {fileID: 303460695411629331, guid: 35b84ce116f1e464daf48cd998877419, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
 --- !u!224 &1794753345 stripped
@@ -2877,6 +2999,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _slotNumber
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryBar
+      value: 
+      objectReference: {fileID: 1214884457}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryTextBoxPrefab
+      value: 
+      objectReference: {fileID: 303460695411629331, guid: 35b84ce116f1e464daf48cd998877419, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
 --- !u!224 &2048260543 stripped
@@ -3210,5 +3344,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryBar
+      value: 
+      objectReference: {fileID: 1214884457}
+    - target: {fileID: 4182735584368877625, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}
+      propertyPath: _inventoryTextBoxPrefab
+      value: 
+      objectReference: {fileID: 303460695411629331, guid: 35b84ce116f1e464daf48cd998877419, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b83dee3d18bc32f47a6237686e0af6ae, type: 3}

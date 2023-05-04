@@ -16,6 +16,11 @@ public class UIInventoryBar : MonoBehaviour
 
     public bool IsAtBottom { get => _isAtBottom; set => _isAtBottom = value; }
 
+    public GameObject InventoryBarDraggedItem;
+
+    [HideInInspector]
+    public GameObject InventoryTextBoxGameObject;
+
     private void OnEnable()
     {
         EventHandler.InventoryUpdatedEvent += InventoryUpdated;
