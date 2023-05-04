@@ -68,7 +68,7 @@ MonoBehaviour:
   - ItemCode: 10004
     ItemType: 3
     ItemDescription: A Basic Hoe
-    ItemSprite: {fileID: 21300042, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
+    ItemSprite: {fileID: 21300052, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
     ItemLongDescription: A strong, sturdy basic hoe - great for breaking up the soil
       ready for planting
     ItemUseGridRadius: 1

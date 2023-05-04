@@ -21,6 +21,14 @@ public class UIInventoryBar : MonoBehaviour
     [HideInInspector]
     public GameObject InventoryTextBoxGameObject;
 
+    public void ClearHighlightOnInventorySlots()
+    {
+        foreach (var slot in _inventorySlot)
+        {
+            slot.ClearSelectedItem();
+        }
+    }
+
     private void OnEnable()
     {
         EventHandler.InventoryUpdatedEvent += InventoryUpdated;
@@ -36,6 +44,7 @@ public class UIInventoryBar : MonoBehaviour
         if (inventoryLocation != InventoryLocation.Player)
             return;
 
+        int currentSelectedItemCode = InventoryManager.Instance.GetSelectedInventoryItem(inventoryLocation);
         ClearInventorySlots();
 
         for (int x = 0; x < _inventorySlot.Length; x++)
@@ -53,6 +62,13 @@ public class UIInventoryBar : MonoBehaviour
                 _inventorySlot[x].ItemQuantity = inventoryList[x].ItemQuantity;
             }
         }
+
+        SetSelectedInventorySlot(currentSelectedItemCode);
+    }
+
+    private void SetSelectedInventorySlot(int itemCode)
+    {
+        _inventorySlot.FirstOrDefault(x => x.ItemDetails?.ItemCode == itemCode)?.SetSelectedItem();
     }
 
     private void ClearInventorySlots()
@@ -63,6 +79,7 @@ public class UIInventoryBar : MonoBehaviour
             slot.TextMeshProUGUI.text = null;
             slot.ItemDetails = null;
             slot.ItemQuantity = 0;
+            slot.ClearSelectedItem();
         }
     }
 
@@ -97,6 +114,4 @@ public class UIInventoryBar : MonoBehaviour
             _isAtBottom = false;
         }
     }
-
-
 }

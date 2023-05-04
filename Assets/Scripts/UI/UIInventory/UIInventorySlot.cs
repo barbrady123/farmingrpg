@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
+public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     private Camera _camera;
 
@@ -26,7 +26,7 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private GameObject _inventoryTextBoxPrefab = null;
 
     public Image InventorySlotHighlight;
-    
+
     public Image InventorySlotImage;
 
     public TextMeshProUGUI TextMeshProUGUI;
@@ -36,6 +36,9 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     [HideInInspector]
     public int ItemQuantity;
+
+    [HideInInspector]
+    public bool IsSelected = false;
 
     private void Awake()
     {
@@ -98,7 +101,7 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         if (this.ItemDetails == null)
             return;
 
-        var worldPosition = 
+        var worldPosition =
             _camera.ScreenToWorldPoint(
                 new Vector3(
                     Input.mousePosition.x,
@@ -155,5 +158,53 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public void OnPointerExit(PointerEventData eventData)
     {
         Destroy(_inventoryBar.InventoryTextBoxGameObject);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button != PointerEventData.InputButton.Left)
+            return;
+
+        if (this.IsSelected)
+        {
+            ClearSelectedItem();
+        }
+        else if (this.ItemQuantity > 0)
+        {
+            SetSelectedItem();
+        }
+    }
+
+    public void ClearSelectedItem()
+    {
+        if (!this.IsSelected)
+            return;
+
+        this.IsSelected = false;
+        this.InventorySlotHighlight.SetImageTransparent();
+        InventoryManager.Instance.ClearSelectedInventoryItem(InventoryLocation.Player);
+
+        Player.Instance.ClearCarriedItem();
+    }
+
+    public void SetSelectedItem()
+    {
+        if (this.IsSelected)
+            return;
+
+        _inventoryBar.ClearHighlightOnInventorySlots();
+
+        this.IsSelected = true;
+        this.InventorySlotHighlight.SetImageOpaque();
+        InventoryManager.Instance.SetSelectedInventoryItem(InventoryLocation.Player, this.ItemDetails.ItemCode);
+
+        if (this.ItemDetails.CanBeCarried)
+        {
+            Player.Instance.ShowCarriedItem(this.ItemDetails.ItemCode);
+        }
+        else
+        {
+            Player.Instance.ClearCarriedItem();
+        }
     }
 }

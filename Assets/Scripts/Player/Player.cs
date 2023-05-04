@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : SingletonMonobehavior<Player>
@@ -68,6 +69,12 @@ public class Player : SingletonMonobehavior<Player>
 
     private Camera _camera;
 
+    private AnimationOverrides _animationOverrides;
+
+    [SerializeField]
+    private SpriteRenderer _equippedItemSpriteRenderer = null;
+
+    // Player attributes that can be swapped
     public bool PlayerInputIsDisabled { get => _playerInputIsDisabled; set => _playerInputIsDisabled = value; }
 
     public Vector3 GetViewportPosition() => _camera.WorldToViewportPoint(transform.position);
@@ -80,6 +87,34 @@ public class Player : SingletonMonobehavior<Player>
         {
             ResetMovement();
         }
+    }
+
+    public void ClearCarriedItem()
+    {
+        _equippedItemSpriteRenderer.sprite = null;
+        _equippedItemSpriteRenderer.SetImageTransparent();
+
+        // Apply base character arms customization
+        _animationOverrides.ApplyCharacterCustomizationParameters(
+            new[] { new CharacterAttribute(CharacterPartAnimator.Arms) });
+
+        _isCarrying = false;
+    }
+
+    public void ShowCarriedItem(int itemCode)
+    {
+        var itemDetails = InventoryManager.Instance.GetItemDetails(itemCode);
+        if (itemDetails == null)
+            return;
+
+        _equippedItemSpriteRenderer.sprite = itemDetails.ItemSprite;
+        _equippedItemSpriteRenderer.SetImageOpaque();
+
+        // Apply "Carry" character arms customization
+        _animationOverrides.ApplyCharacterCustomizationParameters(
+            new[] { new CharacterAttribute(CharacterPartAnimator.Arms, partVariantType: PartVariantType.Carry) });
+
+        _isCarrying = true;
     }
 
     private void ResetMovement()
@@ -98,6 +133,8 @@ public class Player : SingletonMonobehavior<Player>
 
         _rigidBody = GetComponent<Rigidbody2D>();
         _camera = Camera.main;
+
+        _animationOverrides = GetComponentInChildren<AnimationOverrides>();
     }
 
     private void Update()

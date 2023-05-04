@@ -1,9 +1,8 @@
+using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 public class InventoryManager : SingletonMonobehavior<InventoryManager>
 {
@@ -13,6 +12,8 @@ public class InventoryManager : SingletonMonobehavior<InventoryManager>
     private so_ItemList _itemList = null;
 
     public List<InventoryItem>[] InventoryLists;
+
+    private int[] _selectedInventoryItem;
 
     [HideInInspector]
     public int[] InventoryListCapaciyIntArray;
@@ -40,6 +41,9 @@ public class InventoryManager : SingletonMonobehavior<InventoryManager>
 
         this.InventoryListCapaciyIntArray = new int[this.InventoryLists.Length];
         this.InventoryListCapaciyIntArray[(int)InventoryLocation.Player] = Settings.PlayerInitialInventoryCapacity;
+
+        _selectedInventoryItem = new int[this.InventoryLists.Length];
+        _selectedInventoryItem.SetAllToValue(-1);
     }
 
     private void CreateItemDetailsDictionary()
@@ -112,6 +116,10 @@ public class InventoryManager : SingletonMonobehavior<InventoryManager>
         var inventory = this.InventoryLists[(int)inventoryLocation];
 
         var fromItem = inventory[fromSlotNumber];
+
+        if (toSlotNumber >= inventory.Count)
+            toSlotNumber = inventory.Count - 1;
+
         var toItem = inventory[toSlotNumber];
 
         inventory[fromSlotNumber] = toItem;
@@ -119,4 +127,16 @@ public class InventoryManager : SingletonMonobehavior<InventoryManager>
 
         EventHandler.CallInventoryUpdatedEvent(inventoryLocation, inventory);
     }
+
+    /// <summary>
+    /// This is terrible as it only expects an item with a given itemCode to be in a single location...should set this by index
+    /// </summary>
+    public void SetSelectedInventoryItem(InventoryLocation inventoryLocation, int itemCode)
+    {
+        _selectedInventoryItem[(int)inventoryLocation] = itemCode;
+    }
+
+    public void ClearSelectedInventoryItem(InventoryLocation inventoryLocation) => SetSelectedInventoryItem(inventoryLocation, -1);
+
+    public int GetSelectedInventoryItem(InventoryLocation inventoryLocation) => _selectedInventoryItem[(int)inventoryLocation];
 }
