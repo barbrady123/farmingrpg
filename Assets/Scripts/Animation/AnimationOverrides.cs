@@ -47,7 +47,7 @@ public class AnimationOverrides : MonoBehaviour
             var animsKeyValuePairList = new List<KeyValuePair<AnimationClip, AnimationClip>>();
 
             // Get the name of the part we're looking for ("Arms")
-            string animatorSOAssetName = characterAttribute.CharacterPart.ToString();
+            string animatorSOAssetName = characterAttribute.CharacterPart.ToString().ToLower();
 
             // Look at all the animators under the player and find the one we want (the one under the object named "Arms")
             var currentAnimator = _character.GetComponentsInChildren<Animator>().First(x => x.name == animatorSOAssetName);

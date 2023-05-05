@@ -1,7 +1,11 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public static class Settings
 {
+    // Time System
+    public const float SecondsPerGameSecond = 0.012f;
+
     // Obscured Item Fading
     public const float fadeInSeconds = 0.25f;
 
