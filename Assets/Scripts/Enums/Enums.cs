@@ -162,3 +162,12 @@ public enum Season
 
     Winter = 3
 }
+
+public enum SceneName
+{
+    Scene1_Farm = 0,
+
+    Scene2_Field = 1,
+
+    Scene3_Cabin = 2
+}

@@ -17,13 +17,18 @@ public class Item : MonoBehaviour
 
     private void Start()
     {
-        Init();
+        if (_itemCode != 0)
+        {
+            Init(_itemCode);
+        }
     }
 
-    public void Init()
+    public void Init(int itemCode)
     {
-        if (_itemCode <= 0)
+        if (itemCode <= 0)
             return;
+
+        _itemCode = itemCode;
 
         var details = InventoryManager.Instance.GetItemDetails(_itemCode);
         if (details == null)

@@ -1,4 +1,5 @@
 using TMPro;
+using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -48,6 +49,20 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private void Start()
     {
         _camera = Camera.main;
+    }
+
+    private void OnEnable()
+    {
+        EventHandler.AfterSceneLoadEvent += SceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        EventHandler.AfterSceneLoadEvent -= SceneLoaded;
+    }
+
+    private void SceneLoaded()
+    {
         _parentItem = GameObject.FindGameObjectWithTag(Global.Tags.ItemsParentTransform).transform;
     }
 

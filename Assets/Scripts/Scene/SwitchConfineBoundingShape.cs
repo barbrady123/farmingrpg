@@ -3,7 +3,17 @@ using Cinemachine;
 
 public class SwitchConfineBoundingShape : MonoBehaviour
 {
-    void Start()
+    private void OnEnable()
+    {
+        EventHandler.AfterSceneLoadEvent += SceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        EventHandler.AfterSceneLoadEvent -= SceneLoaded;
+    }
+
+    private void SceneLoaded()
     {
         SwitchBoundingShape();
     }

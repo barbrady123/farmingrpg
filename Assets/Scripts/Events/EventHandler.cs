@@ -143,4 +143,52 @@ public static class EventHandler
         AdvanceGameYearEvent(gameYear, gameSeason, gameDay, gameDayOfWeek, gameHour, gameMinute, gameSecond);
     }
     #endregion
+
+    #region Before Scene Unload Fade Out Event
+    public static event Action BeforeSceneUnloadFadeOutEvent;
+
+    public static void CallBeforeSceneUnloadFadeOutEvent()
+    {
+        if (BeforeSceneUnloadFadeOutEvent == null)
+            return;
+
+        BeforeSceneUnloadFadeOutEvent();
+    }
+    #endregion
+
+    #region Before Scene Unload Event
+    public static event Action BeforeSceneUnloadEvent;
+
+    public static void CallBeforeSceneUnloadEvent()
+    {
+        if (BeforeSceneUnloadEvent == null)
+            return;
+
+        BeforeSceneUnloadEvent();
+    }
+    #endregion
+
+    #region After Scene Load Event
+    public static event Action AfterSceneLoadEvent;
+
+    public static void CallAfterSceneLoadEvent()
+    {
+        if (AfterSceneLoadEvent == null)
+            return;
+
+        AfterSceneLoadEvent();
+    }
+    #endregion
+
+    #region After Scene Load Fade In Event
+    public static event Action AfterSceneLoadFadeInEvent;
+
+    public static void CallAfterSceneLoadFadeInEvent()
+    {
+        if (AfterSceneLoadFadeInEvent == null)
+            return;
+
+        AfterSceneLoadFadeInEvent();
+    }
+    #endregion
 }

@@ -142,12 +142,34 @@ public class Player : SingletonMonobehavior<Player>
         if (this.PlayerInputIsDisabled)
             return;
 
+        // TEMP:
+        PlayerTestInput();
+
         #region Player Input
         ResetAnimationTriggers();
         PlayerMovementInput();
         PlayerWalkInput();
         FireMovementEvent();
         #endregion
+    }
+
+    // TEMP:
+    private void PlayerTestInput()
+    {
+        if (Input.GetKey(KeyCode.T))
+        {
+            TimeManager.Instance.TestAdvanceGameMinute();
+        }
+
+        if (Input.GetKey(KeyCode.G))
+        {
+            TimeManager.Instance.TestAdvanceGameDay();
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            SceneControllerManager.Instance.FadeAndLoadScene(SceneName.Scene1_Farm.ToString(), transform.position);
+        }
     }
 
     private void FixedUpdate()
