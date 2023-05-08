@@ -1,4 +1,3 @@
-using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +18,12 @@ public class InventoryManager : SingletonMonobehavior<InventoryManager>
     public int[] InventoryListCapaciyIntArray;
 
     public ItemDetails GetItemDetails(int itemCode) => this.ItemDetailsDictionary.TryGetValue(itemCode, out var details) ? details : null;
+
+    public ItemDetails GetSelectedInventoryItemDetails(InventoryLocation inventoryLocation)
+    {
+        int itemCode = GetSelectedInventoryItem(inventoryLocation);
+        return itemCode > 0 ? GetItemDetails(itemCode) : null;
+    }
 
     protected override void Awake()
     {

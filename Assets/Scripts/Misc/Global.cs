@@ -21,4 +21,14 @@ public static class Global
 
         public const string CollectingTool = "Basket";
     }
+
+    public static class Inputs
+    {
+        public static class MouseButtons
+        {
+            public const int Left = 0;
+
+            public const int Right = 1;
+        }
+    }
 }

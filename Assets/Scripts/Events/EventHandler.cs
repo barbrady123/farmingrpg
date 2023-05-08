@@ -3,6 +3,18 @@ using System.Collections.Generic;
 
 public static class EventHandler
 {
+    #region Drop Selected Item Event
+    public static event Action DropSelectedItemEvent;
+
+    public static void CallDropSelectedItemEvent()
+    {
+        if (DropSelectedItemEvent == null)
+            return;
+
+        DropSelectedItemEvent();
+    }
+    #endregion
+
     #region Inventory Updated Event
     // Inventory Updated Event
     public static event Action<InventoryLocation, List<InventoryItem>> InventoryUpdatedEvent;

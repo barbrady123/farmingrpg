@@ -3,6 +3,9 @@ using UnityEngine;
 
 public static class Settings
 {
+    // Tilemap - Grid cell size in unity units
+    public const float GridCellSize = 1f;
+
     // Time System
     public const float SecondsPerGameSecond = 0.012f;
 

@@ -51,8 +51,31 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
                     case GridBoolProperty.CanDropItem:
                         gridPropertyDetails.CanDropItem = gridProperty.GridBoolValue;
                         break;
+                    case GridBoolProperty.CanPlaceFurniture:
+                        gridPropertyDetails.CanPlaceFurniture = gridProperty.GridBoolValue;
+                        break;
+                    case GridBoolProperty.IsPath:
+                        gridPropertyDetails.IsPath = gridProperty.GridBoolValue;
+                        break;
+                    case GridBoolProperty.IsNPCObstacle:
+                        gridPropertyDetails.IsNPCObstacle = gridProperty.GridBoolValue;
+                        break;
                 }
+
+                SetGridPropertyDetails(gridProperty.GridCoordinate.X, gridProperty.GridCoordinate.Y, gridPropertyDetails, gridPropertyDictionary);
             }
+
+            // Create scene save for this gameobject
+            var sceneSave = new SceneSave(gridPropertyDictionary);
+
+            // If starting scene set the gridPropertyDictionary member variable to the current iteration
+            if (so_GridProperties.SceneName.ToString() == SceneControllerManager.Instance.StartSceneName.ToString())
+            {
+                _gridPropertyDictionary = gridPropertyDictionary;
+            }
+
+            // Add scene save to gameobject scene data
+            GameObjectSave.SceneData.Add(so_GridProperties.SceneName.ToString(), sceneSave);
         }
     }
 
@@ -89,25 +112,26 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
     public GridPropertyDetails GetGridPropertyDetails(int gridX, int gridY, Dictionary<string, GridPropertyDetails> gridPropertyDictionary) =>
         gridPropertyDictionary.TryGetValue($"x{gridX}y{gridY}", out var gridPropertyDetails) ? gridPropertyDetails : null;
 
+    public GridPropertyDetails GetGridPropertyDetails(int gridX, int gridY) => GetGridPropertyDetails(gridX, gridY, _gridPropertyDictionary);
+
+    /// <summary>
+    /// Should also not be here
+    /// </summary>
+    public void SetGridPropertyDetails(int gridX, int gridY, GridPropertyDetails gridPropertyDetails, Dictionary<string, GridPropertyDetails> gridPropertyDictionary)
+    {
+        gridPropertyDetails.GridX = gridX;
+        gridPropertyDetails.GridY = gridY;
+
+        gridPropertyDictionary[$"x{gridX}y{gridY}"] = gridPropertyDetails;
+    }
+
     public void ISaveableStoreScene(string sceneName)
     {
         // Remove old scene save for gameObject if exists
         GameObjectSave.SceneData.Remove(sceneName);
 
-        var sceneItemList = new List<SceneItem>();
-
-        // Loop through all scene items
-        foreach (var item in FindObjectsOfType<Item>())
-        {
-            sceneItemList.Add(new SceneItem {
-                ItemCode = item.ItemCode,
-                Position = new Vector3Serializable(item.transform.position),
-                ItemName = item.name
-            });
-        }
-
-        // Create list scene items in scene save, then add it to gameobject
-        GameObjectSave.SceneData.Add(sceneName, new SceneSave(sceneItemList));
+        // Add scene save to game object scene data
+        GameObjectSave.SceneData.Add(sceneName, new SceneSave(_gridPropertyDictionary));
     }
 
     public void ISaveableRestoreScene(string sceneName)

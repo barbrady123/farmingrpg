@@ -14,6 +14,8 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     private GameObject _draggedItem;
 
+    private GridCursor _gridCursor;
+
     [SerializeField]
     private UIInventoryBar _inventoryBar = null;
 
@@ -49,16 +51,25 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private void Start()
     {
         _camera = Camera.main;
+        _gridCursor = FindObjectOfType<GridCursor>();
+    }
+
+    private void ClearCursors()
+    {
+        _gridCursor.DisableCursor();
+        _gridCursor.SelectedItemType = ItemType.None;
     }
 
     private void OnEnable()
     {
         EventHandler.AfterSceneLoadEvent += SceneLoaded;
+        EventHandler.DropSelectedItemEvent += DropSelectedItemAtMousePosition;
     }
 
     private void OnDisable()
     {
         EventHandler.AfterSceneLoadEvent -= SceneLoaded;
+        EventHandler.DropSelectedItemEvent -= DropSelectedItemAtMousePosition;
     }
 
     private void SceneLoaded()
@@ -79,6 +90,8 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         // Get image for dragged item
         var draggedItemImage = _draggedItem.GetComponentInChildren<Image>();
         draggedItemImage.sprite = this.InventorySlotImage.sprite;
+
+        SetSelectedItem();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -116,6 +129,13 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         if (this.ItemDetails == null)
             return;
 
+        if (!this.IsSelected)
+            return;
+
+        // Test if we can drop here
+        if (!_gridCursor.CursorPositionIsValid)
+            return;
+
         var worldPosition =
             _camera.ScreenToWorldPoint(
                 new Vector3(
@@ -124,7 +144,15 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
                     -_camera.transform.position.z));
 
         // Create item from prefab at mouse position
-        var itemGameObject = Instantiate(_itemPrefab, worldPosition, Quaternion.identity, _parentItem);
+        var itemGameObject =
+            Instantiate(
+                _itemPrefab,
+                new Vector3(
+                    worldPosition.x,
+                    worldPosition.y - Settings.GridCellSize / 2f,   // Offset because position is based on Pivot instead of center
+                    worldPosition.z),
+                Quaternion.identity,
+                _parentItem);
         var item = itemGameObject.GetComponent<Item>();
         item.ItemCode = ItemDetails.ItemCode;
 
@@ -195,6 +223,8 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         if (!this.IsSelected)
             return;
 
+        ClearCursors();
+
         this.IsSelected = false;
         this.InventorySlotHighlight.SetImageTransparent();
         InventoryManager.Instance.ClearSelectedInventoryItem(InventoryLocation.Player);
@@ -211,6 +241,20 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
         this.IsSelected = true;
         this.InventorySlotHighlight.SetImageOpaque();
+
+        _gridCursor.ItemUseGridRadius = this.ItemDetails.ItemUseGridRadius;
+        _gridCursor.SelectedItemType = this.ItemDetails.ItemType;
+
+        // If item requires a grid cursor then enable it
+        if (ItemDetails.ItemUseGridRadius > 0)
+        {
+            _gridCursor.EnableCursor();
+        }
+        else
+        {
+            _gridCursor.DisableCursor();
+        }
+
         InventoryManager.Instance.SetSelectedInventoryItem(InventoryLocation.Player, this.ItemDetails.ItemCode);
 
         if (this.ItemDetails.CanBeCarried)

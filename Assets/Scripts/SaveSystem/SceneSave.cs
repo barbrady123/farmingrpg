@@ -14,4 +14,9 @@ public class SceneSave
     {
         this.ListSceneItem = sceneItems;
     }
+
+    public SceneSave(Dictionary<string,GridPropertyDetails> gridPropertyDetails)
+    {
+        this.GridPropertyDetailsDictionary = gridPropertyDetails;
+    }
 }

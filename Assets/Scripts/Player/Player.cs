@@ -59,6 +59,8 @@ public class Player : SingletonMonobehavior<Player>
     private ToolEffect _toolEffect = ToolEffect.None;
     #endregion
 
+    private GridCursor _gridCursor;
+
     private Rigidbody2D _rigidBody;
 
     private Direction _playerDirection;
@@ -137,6 +139,11 @@ public class Player : SingletonMonobehavior<Player>
         _animationOverrides = GetComponentInChildren<AnimationOverrides>();
     }
 
+    private void Start()
+    {
+        _gridCursor = FindObjectOfType<GridCursor>();
+    }
+
     private void Update()
     {
         if (this.PlayerInputIsDisabled)
@@ -149,6 +156,7 @@ public class Player : SingletonMonobehavior<Player>
         ResetAnimationTriggers();
         PlayerMovementInput();
         PlayerWalkInput();
+        PlayerClickInput();
         FireMovementEvent();
         #endregion
     }
@@ -240,6 +248,52 @@ public class Player : SingletonMonobehavior<Player>
         _isWalking = shiftPressed;
         _isIdle = false;
         _movementSpeed = shiftPressed ? Settings.walkingSpeed : Settings.runningSpeed;
+    }
+
+    private void PlayerClickInput()
+    {
+        if (Input.GetMouseButtonDown(Global.Inputs.MouseButtons.Left))
+        {
+            if (_gridCursor.CursorIsEnabled)
+            {
+                ProcessPlayerClickInput();
+            }
+        }
+    }
+
+    private void ProcessPlayerClickInput()
+    {
+        ResetMovement();
+
+        var itemDetails = InventoryManager.Instance.GetSelectedInventoryItemDetails(InventoryLocation.Player);
+        if (itemDetails == null)
+            return;
+
+        switch (itemDetails.ItemType)
+        {
+            case ItemType.Seed:
+                ProcessPlayerClickInputSeed(itemDetails);
+                break;
+            case ItemType.Commodity:
+                ProcessPlayerClickInputCommondity(itemDetails);
+                break;
+        }
+    }
+
+    private void ProcessPlayerClickInputSeed(ItemDetails itemDetails)
+    {
+        if (itemDetails.CanBeDropped && _gridCursor.CursorPositionIsValid)
+        {
+            EventHandler.CallDropSelectedItemEvent();
+        }
+    }
+
+    private void ProcessPlayerClickInputCommondity(ItemDetails itemDetails)
+    {
+        if (itemDetails.CanBeDropped && _gridCursor.CursorPositionIsValid)
+        {
+            EventHandler.CallDropSelectedItemEvent();
+        }
     }
 
     private void FireMovementEvent()
