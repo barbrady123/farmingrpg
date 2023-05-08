@@ -4,15 +4,14 @@ using System.Collections.Generic;
 [Serializable]
 public class SceneSave
 {
-    public Dictionary<string, List<SceneItem>> ListSceneItemDictionary;
+    public List<SceneItem> ListSceneItem;
 
-    public SceneSave()
-    {
-        this.ListSceneItemDictionary = new Dictionary<string, List<SceneItem>>();
-    }
+    public Dictionary<string, GridPropertyDetails> GridPropertyDetailsDictionary;
 
-    public SceneSave(string key, List<SceneItem> sceneItems) : this()
+    public SceneSave() { }
+
+    public SceneSave(List<SceneItem> sceneItems)
     {
-        this.ListSceneItemDictionary.Add(key, sceneItems);
+        this.ListSceneItem = sceneItems;
     }
 }

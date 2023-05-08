@@ -171,3 +171,16 @@ public enum SceneName
 
     Scene3_Cabin = 2
 }
+
+public enum GridBoolProperty
+{
+    Diggable = 0,
+
+    CanDropItem = 1,
+
+    CanPlaceFurniture = 2,
+
+    IsPath = 3,
+
+        IsNPCObstacle = 4
+}

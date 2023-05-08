@@ -4,8 +4,6 @@ using UnityEngine;
 [RequireComponent(typeof(GenerateGUID))]
 public class SceneItemsManager : SingletonMonobehavior<SceneItemsManager>, ISaveable
 {
-    public const string SceneItemListKey = "sceneItemList";
-
     private Transform _parentItem;
 
     [SerializeField]
@@ -71,11 +69,8 @@ public class SceneItemsManager : SingletonMonobehavior<SceneItemsManager>, ISave
             });
         }
 
-        // Create list scene item dictionary in scene save and add to it
-        var sceneSave = new SceneSave(SceneItemsManager.SceneItemListKey, sceneItemList);
-
-        // Add scene save to gameobject
-        GameObjectSave.SceneData.Add(sceneName, sceneSave);
+        // Create list scene items in scene save, then add it to gameobject
+        GameObjectSave.SceneData.Add(sceneName, new SceneSave(sceneItemList));
     }
 
     public void ISaveableRestoreScene(string sceneName)
@@ -83,14 +78,14 @@ public class SceneItemsManager : SingletonMonobehavior<SceneItemsManager>, ISave
         if (!GameObjectSave.SceneData.TryGetValue(sceneName, out var sceneSave))
             return;
 
-        if (!sceneSave.ListSceneItemDictionary.TryGetValue(SceneItemsManager.SceneItemListKey, out var sceneItemList))
-            return;
-
         // Scene list items found - destroy existing items in scene
-        DestroySceneItems();
+        if (sceneSave.ListSceneItem != null)
+        {
+            DestroySceneItems();
 
-        // Now instantiate the list of scene items
-        InstantiateSceneItems(sceneItemList);
+            // Now instantiate the list of scene items
+            InstantiateSceneItems(sceneSave.ListSceneItem);
+        }
     }
 
     public void InstantiateSceneItem(int itemCode, Vector3 itemPosition)
