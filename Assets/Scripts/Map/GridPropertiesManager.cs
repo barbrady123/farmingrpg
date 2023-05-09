@@ -125,6 +125,8 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
         gridPropertyDictionary[$"x{gridX}y{gridY}"] = gridPropertyDetails;
     }
 
+    public void SetGridPropertyDetails(int gridX, int gridY, GridPropertyDetails gridPropertyDetails) => SetGridPropertyDetails(gridX, gridY, gridPropertyDetails, _gridPropertyDictionary);
+
     public void ISaveableStoreScene(string sceneName)
     {
         // Remove old scene save for gameObject if exists

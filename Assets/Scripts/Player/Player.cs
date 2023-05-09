@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -58,6 +59,12 @@ public class Player : SingletonMonobehavior<Player>
 
     private ToolEffect _toolEffect = ToolEffect.None;
     #endregion
+
+    private WaitForSeconds _useToolAnimationPause = new WaitForSeconds(Settings.UseToolAnimationPause);
+
+    private WaitForSeconds _afterUseToolAnimationPause = new WaitForSeconds(Settings.AfterUseToolAnimationPause);
+
+    private bool _playerToolUseDisabled = false;
 
     private GridCursor _gridCursor;
 
@@ -227,7 +234,7 @@ public class Player : SingletonMonobehavior<Player>
             _isRunning = true;
             _isWalking = false;
             _isIdle = false;
-            _movementSpeed = Settings.runningSpeed;
+            _movementSpeed = Settings.RunningSpeed;
 
             // Capture player direction for save game
             _playerDirection = Conversions.DirectionFromAxisInput(_xInput, _yInput);
@@ -247,11 +254,14 @@ public class Player : SingletonMonobehavior<Player>
         _isRunning = !shiftPressed;
         _isWalking = shiftPressed;
         _isIdle = false;
-        _movementSpeed = shiftPressed ? Settings.walkingSpeed : Settings.runningSpeed;
+        _movementSpeed = shiftPressed ? Settings.WalkingSpeed : Settings.RunningSpeed;
     }
 
     private void PlayerClickInput()
     {
+        if (_playerToolUseDisabled)
+            return;
+
         if (Input.GetMouseButtonDown(Global.Inputs.MouseButtons.Left))
         {
             if (_gridCursor.CursorIsEnabled)
@@ -277,6 +287,42 @@ public class Player : SingletonMonobehavior<Player>
             case ItemType.Commodity:
                 ProcessPlayerClickInputCommondity(itemDetails);
                 break;
+            // case other tools also following same path?
+            case ItemType.HoeingTool:
+                ProcessPlayerClickInputTool(itemDetails);
+                break;
+        }
+    }
+
+    private Vector3Int GetPlayerClickDirection(Vector3Int cursorGridPosition, Vector3Int playerGridPosition)
+    {
+        if (cursorGridPosition.x > playerGridPosition.x)
+            return Vector3Int.right;
+
+        if (cursorGridPosition.x < playerGridPosition.x)
+            return Vector3Int.left;
+
+        if (cursorGridPosition.y > playerGridPosition.y)
+            return Vector3Int.up;
+
+        return Vector3Int.down;
+    }
+
+    private void ProcessPlayerClickInputTool(ItemDetails itemDetails)
+    {
+        var cursorGridPosition = _gridCursor.GetGridPositionForCursor();
+        var playerGridPosition = _gridCursor.GetGridPositionForPlayer();
+        var playerClickDirection = GetPlayerClickDirection(cursorGridPosition, playerGridPosition);
+        var gridPropertyDetails = GridPropertiesManager.Instance.GetGridPropertyDetails(cursorGridPosition.x, cursorGridPosition.y);
+
+        switch (itemDetails.ItemType)
+        {
+            case ItemType.HoeingTool:
+                if (_gridCursor.CursorPositionIsValid)
+                {
+                    HoeGroundAtCursor(gridPropertyDetails, playerClickDirection);
+                }
+                break;
         }
     }
 
@@ -294,6 +340,56 @@ public class Player : SingletonMonobehavior<Player>
         {
             EventHandler.CallDropSelectedItemEvent();
         }
+    }
+
+    private void HoeGroundAtCursor(GridPropertyDetails gridPropertyDetails, Vector3Int playerClickDirection)
+    {
+        // Trigger animation
+        StartCoroutine(HoeGroundAtCursorRoutine(gridPropertyDetails, playerClickDirection));
+    }
+
+    private IEnumerator HoeGroundAtCursorRoutine(GridPropertyDetails gridPropertyDetails, Vector3Int playerClickDirection)
+    {
+        _playerInputIsDisabled = true;
+        _playerToolUseDisabled = true;
+
+        // Set tool animation to hoe in override animation
+        _animationOverrides.ApplyCharacterCustomizationParameters(
+            new[] { new CharacterAttribute(CharacterPartAnimator.Tool, partVariantType: PartVariantType.Hoe) });
+
+        if (playerClickDirection == Vector3Int.right)
+        {
+            _isUsingToolRight = true;
+        }
+        else if (playerClickDirection == Vector3Int.left)
+        {
+            _isUsingToolLeft = true;
+        }
+        else if (playerClickDirection == Vector3Int.up)
+        {
+            _isUsingToolUp = true;
+        }
+        else
+        {
+            _isUsingToolDown = true;
+        }
+
+        yield return _useToolAnimationPause;
+
+        // Set grid property details for dug ground
+        if (gridPropertyDetails.DaysSinceDug < 0)
+        {
+            gridPropertyDetails.DaysSinceDug = 0;
+        }
+
+        // Set grid property to dug
+        GridPropertiesManager.Instance.SetGridPropertyDetails(gridPropertyDetails.GridX, gridPropertyDetails.GridY, gridPropertyDetails);
+
+        // Animation after pause
+        yield return _afterUseToolAnimationPause;
+
+        _playerInputIsDisabled = false;
+        _playerToolUseDisabled = false;
     }
 
     private void FireMovementEvent()

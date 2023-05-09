@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -125,6 +128,12 @@ public class GridCursor : MonoBehaviour
                     SetCursorToInvalid();
                 }
                 break;
+            case ItemType.HoeingTool:
+                if (!IsCursorValidForTool(gridPropertyDetails, itemDetails))
+                {
+                    SetCursorToInvalid();
+                }
+                break;
         }
     }
 
@@ -138,6 +147,32 @@ public class GridCursor : MonoBehaviour
     {
         _cursorImage.sprite = _greenCursorSprite;
         _cursorPositionIsValid = true;
+    }
+
+    private bool IsCursorValidForTool(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails)
+    {
+        switch (itemDetails.ItemType)
+        {
+            case ItemType.HoeingTool:
+                if ((!gridPropertyDetails.IsDiggable) || (gridPropertyDetails.DaysSinceDug >= 0))
+                    return false;
+
+                // Need to get any items at location so we can check if they are reapable
+                var cursorBaseWorldPosition = GetWorldPositionForCursor();
+                var cursorWorldPosition = new Vector3(cursorBaseWorldPosition.x + 0.5f, cursorBaseWorldPosition.y + 0.5f, 0f);
+
+                // Loops through Items found to see if any are reapable type - we are not going to let the player dig where there are reapable scenery items
+                var reapableItem =
+                    Util.GetComponentsAtBoxLocation<Item>(
+                        cursorWorldPosition,
+                        Settings.CursorSize,
+                        0f)
+                        .FirstOrDefault(x => InventoryManager.Instance.GetItemDetails(x.ItemCode).ItemType == ItemType.ReapableScenery);
+
+                return (reapableItem == null);
+        }
+
+        return false;
     }
 
     private bool IsCursorValidForCommodity(GridPropertyDetails gridPropertyDetails)
@@ -161,6 +196,8 @@ public class GridCursor : MonoBehaviour
         _cursorImage.color = Color.white;
         _cursorIsEnabled = true;
     }
+
+    private Vector3 GetWorldPositionForCursor() => _grid.CellToWorld(GetGridPositionForCursor());
 
     public Vector3Int GetGridPositionForCursor()
     {

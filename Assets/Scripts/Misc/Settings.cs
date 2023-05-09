@@ -6,20 +6,26 @@ public static class Settings
     // Tilemap - Grid cell size in unity units
     public const float GridCellSize = 1f;
 
+    public static Vector2 CursorSize = Vector2.one;
+
     // Time System
     public const float SecondsPerGameSecond = 0.012f;
 
     // Obscured Item Fading
-    public const float fadeInSeconds = 0.25f;
+    public const float FadeInSeconds = 0.25f;
 
-    public const float fadeOutSeconds = 0.35f;
+    public const float FadeOutSeconds = 0.35f;
 
-    public const float targetAlpha = 0.45f;
+    public const float TargetAlpha = 0.45f;
 
     // Player Movement
-    public const float runningSpeed = 5.333f;
+    public const float RunningSpeed = 5.333f;
 
-    public const float walkingSpeed = 2.666f;
+    public const float WalkingSpeed = 2.666f;
+
+    public const float UseToolAnimationPause = 0.25f;
+
+    public const float AfterUseToolAnimationPause = 0.2f;
 
     // Inventory
     public static int PlayerInitialInventoryCapacity = 24;
