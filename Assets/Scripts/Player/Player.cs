@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : SingletonMonobehavior<Player>
@@ -63,6 +62,10 @@ public class Player : SingletonMonobehavior<Player>
     private WaitForSeconds _useToolAnimationPause = new WaitForSeconds(Settings.UseToolAnimationPause);
 
     private WaitForSeconds _afterUseToolAnimationPause = new WaitForSeconds(Settings.AfterUseToolAnimationPause);
+
+    private WaitForSeconds _liftToolAnimationPause = new WaitForSeconds(Settings.LiftToolAnimationPause);
+
+    private WaitForSeconds _afterLiftToolAnimationPause = new WaitForSeconds(Settings.AfterLiftToolAnimationPause);
 
     private bool _playerToolUseDisabled = false;
 
@@ -289,6 +292,7 @@ public class Player : SingletonMonobehavior<Player>
                 break;
             // case other tools also following same path?
             case ItemType.HoeingTool:
+            case ItemType.WateringTool:
                 ProcessPlayerClickInputTool(itemDetails);
                 break;
         }
@@ -315,13 +319,16 @@ public class Player : SingletonMonobehavior<Player>
         var playerClickDirection = GetPlayerClickDirection(cursorGridPosition, playerGridPosition);
         var gridPropertyDetails = GridPropertiesManager.Instance.GetGridPropertyDetails(cursorGridPosition.x, cursorGridPosition.y);
 
+        if (!_gridCursor.CursorPositionIsValid)
+            return;
+
         switch (itemDetails.ItemType)
         {
             case ItemType.HoeingTool:
-                if (_gridCursor.CursorPositionIsValid)
-                {
-                    HoeGroundAtCursor(gridPropertyDetails, playerClickDirection);
-                }
+                HoeGroundAtCursor(gridPropertyDetails, playerClickDirection);
+                break;
+            case ItemType.WateringTool:
+                WaterGroundAtCursor(gridPropertyDetails, playerClickDirection);
                 break;
         }
     }
@@ -340,6 +347,62 @@ public class Player : SingletonMonobehavior<Player>
         {
             EventHandler.CallDropSelectedItemEvent();
         }
+    }
+
+    private void WaterGroundAtCursor(GridPropertyDetails gridPropertyDetails, Vector3Int playerClickDirection)
+    {
+        // Trigger animation
+        StartCoroutine(WaterGroundAtCursorRoutine(gridPropertyDetails, playerClickDirection));
+    }
+
+    private IEnumerator WaterGroundAtCursorRoutine(GridPropertyDetails gridPropertyDetails, Vector3Int playerClickDirection)
+    {
+        _playerInputIsDisabled = true;
+        _playerToolUseDisabled = true;
+
+        // Set tool animation to hoe in override animation
+        _animationOverrides.ApplyCharacterCustomizationParameters(
+            new[] { new CharacterAttribute(CharacterPartAnimator.Tool, partVariantType: PartVariantType.WateringCan) });
+
+        // TODO: if there is water in the watering can
+        _toolEffect = ToolEffect.Watering;
+
+        if (playerClickDirection == Vector3Int.right)
+        {
+            _isLiftingToolRight = true;
+        }
+        else if (playerClickDirection == Vector3Int.left)
+        {
+            _isLiftingToolLeft = true;
+        }
+        else if (playerClickDirection == Vector3Int.up)
+        {
+            _isLiftingToolUp = true;
+        }
+        else
+        {
+            _isLiftingToolDown = true;
+        }
+
+        yield return _liftToolAnimationPause;
+
+        // Set grid property details for ground watered
+        if (gridPropertyDetails.DaysSinceWatered < 0)
+        {
+            gridPropertyDetails.DaysSinceWatered = 0;
+        }
+
+        // Set grid property to watered
+        GridPropertiesManager.Instance.SetGridPropertyDetails(gridPropertyDetails.GridX, gridPropertyDetails.GridY, gridPropertyDetails);
+
+        // Display watered grid tiles
+        GridPropertiesManager.Instance.DisplayWateredGround(gridPropertyDetails);
+
+        // Animation after pause
+        yield return _afterLiftToolAnimationPause;
+
+        _playerInputIsDisabled = false;
+        _playerToolUseDisabled = false;
     }
 
     private void HoeGroundAtCursor(GridPropertyDetails gridPropertyDetails, Vector3Int playerClickDirection)
@@ -384,6 +447,9 @@ public class Player : SingletonMonobehavior<Player>
 
         // Set grid property to dug
         GridPropertiesManager.Instance.SetGridPropertyDetails(gridPropertyDetails.GridX, gridPropertyDetails.GridY, gridPropertyDetails);
+
+        // Display dug grid tiles
+        GridPropertiesManager.Instance.DisplayDugGround(gridPropertyDetails);
 
         // Animation after pause
         yield return _afterUseToolAnimationPause;

@@ -128,6 +128,7 @@ public class GridCursor : MonoBehaviour
                     SetCursorToInvalid();
                 }
                 break;
+            case ItemType.WateringTool:
             case ItemType.HoeingTool:
                 if (!IsCursorValidForTool(gridPropertyDetails, itemDetails))
                 {
@@ -170,6 +171,9 @@ public class GridCursor : MonoBehaviour
                         .FirstOrDefault(x => InventoryManager.Instance.GetItemDetails(x.ItemCode).ItemType == ItemType.ReapableScenery);
 
                 return (reapableItem == null);
+            case ItemType.WateringTool:
+                return (gridPropertyDetails.DaysSinceDug >= 0) && (gridPropertyDetails.DaysSinceWatered < 0);
+
         }
 
         return false;

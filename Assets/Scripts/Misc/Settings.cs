@@ -27,6 +27,10 @@ public static class Settings
 
     public const float AfterUseToolAnimationPause = 0.2f;
 
+    public const float LiftToolAnimationPause = 0.4f;
+
+    public const float AfterLiftToolAnimationPause = 0.4f;
+
     // Inventory
     public static int PlayerInitialInventoryCapacity = 24;
 

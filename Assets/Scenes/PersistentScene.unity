@@ -439,7 +439,7 @@ GameObject:
   - component: {fileID: 137271427}
   - component: {fileID: 137271426}
   m_Layer: 0
-  m_Name: GamePropertiesManager
+  m_Name: GridPropertiesManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -457,7 +457,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 200f9513db7bc6141be37eec201f276d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Grid: {fileID: 0}
+  _dugGround:
+  - {fileID: 11400000, guid: c44723fb621e65d4da75cfff620c4af7, type: 2}
+  - {fileID: 11400000, guid: f0ace5d3f18443c49a3c8af9f437bac7, type: 2}
+  - {fileID: 11400000, guid: 52268f12599d0c34bab4f452d0e2796a, type: 2}
+  - {fileID: 11400000, guid: 96aea33ce02e2bb49ad3d1a339bc66ef, type: 2}
+  - {fileID: 11400000, guid: 584d555091e2d674b98f8b584dbb3693, type: 2}
+  - {fileID: 11400000, guid: 6f226370187fca34c9467cfce24e0e29, type: 2}
+  - {fileID: 11400000, guid: 89acc0e531f991140a1731ed03f316a2, type: 2}
+  - {fileID: 11400000, guid: 703a655367fe298429aa0895669c3398, type: 2}
+  - {fileID: 11400000, guid: 1074e8626b20ca44ebfac574f6a37e87, type: 2}
+  - {fileID: 11400000, guid: 52d2546b27e29f944bfd9bc6de4d8534, type: 2}
+  - {fileID: 11400000, guid: 6030f71f6c9f2df47b718097292ac6cc, type: 2}
+  - {fileID: 11400000, guid: c8c396c93cebca14da4b0d3fd6c883e3, type: 2}
+  - {fileID: 11400000, guid: e5aef163017076f4ca6a031021dde59d, type: 2}
+  - {fileID: 11400000, guid: 2179e4f5534ed8e408d73129449827f4, type: 2}
+  - {fileID: 11400000, guid: 832dbccf73e7c3f438bc908a65ef3d95, type: 2}
+  - {fileID: 11400000, guid: fad5556a47aac914c9c1244d9680a81a, type: 2}
+  _wateredGround:
+  - {fileID: 11400000, guid: a91d3478dc98b494e8683b66f661abde, type: 2}
+  - {fileID: 11400000, guid: b24cae46b8ddd7549b102667ca64e53a, type: 2}
+  - {fileID: 11400000, guid: 48c231a59bfbbd24fb8e73222f56efc6, type: 2}
+  - {fileID: 11400000, guid: 533ccc0a5a5c2af45962f17a05972d8f, type: 2}
+  - {fileID: 11400000, guid: 26f3532c0a9d8494980b92666378c188, type: 2}
+  - {fileID: 11400000, guid: 2d5dc663b0f346046916dc2d9a6decd9, type: 2}
+  - {fileID: 11400000, guid: 84aae67e170a33146bd01a6b2929800c, type: 2}
+  - {fileID: 11400000, guid: 9c27e9f040aa94740af800af7bc8bb60, type: 2}
+  - {fileID: 11400000, guid: 39bc0246048c8004c92520aa8ab43291, type: 2}
+  - {fileID: 11400000, guid: da2656b79d0b9e241bfbd0fd1ec1427c, type: 2}
+  - {fileID: 11400000, guid: f361b35e9118ae04db49c520e51d783c, type: 2}
+  - {fileID: 11400000, guid: 79f8eef88af5eee478c8f6eba0348e43, type: 2}
+  - {fileID: 11400000, guid: 7263bfba986a6904e8e4c09bb7087ea2, type: 2}
+  - {fileID: 11400000, guid: 963e4d71b7dc3de4a88a30ea9c294706, type: 2}
+  - {fileID: 11400000, guid: 85fc65173b8e90c48a0e1b42a8572704, type: 2}
+  - {fileID: 11400000, guid: 62cb13e53fd90ef49b05cd2ab2308a33, type: 2}
   _so_GridPropertiesArray:
   - {fileID: 11400000, guid: b4ce25b3e81413d499bf0bb2fd830190, type: 2}
   - {fileID: 11400000, guid: 6ab73cfc3806a5b4e955ecabcd5bdae6, type: 2}
