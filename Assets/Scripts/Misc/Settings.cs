@@ -3,6 +3,8 @@ using UnityEngine;
 
 public static class Settings
 {
+    public const float PlayerCenterYOffset = 0.875f;
+
     // Tilemap - Grid cell size in unity units
     public const float GridCellSize = 1f;
 
