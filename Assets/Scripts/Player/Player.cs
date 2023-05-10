@@ -228,11 +228,6 @@ public class Player : SingletonMonobehavior<Player>
         {
             TimeManager.Instance.TestAdvanceGameDay();
         }
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            SceneControllerManager.Instance.FadeAndLoadScene(SceneName.Scene1_Farm.ToString(), transform.position);
-        }
     }
 
     private void FixedUpdate()

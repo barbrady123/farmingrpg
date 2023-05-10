@@ -108,7 +108,6 @@ GameObject:
   - component: {fileID: 5564374330267790597}
   - component: {fileID: 3566057754243066302}
   - component: {fileID: 5253407778120477889}
-  - component: {fileID: 266661117339847610}
   m_Layer: 0
   m_Name: CanyonOakScenery
   m_TagString: Untagged
@@ -210,15 +209,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 3, y: 6}
   m_EdgeRadius: 0
---- !u!114 &266661117339847610
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4869900963174432811}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0087352cc66fa2349842b0efe794e964, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
