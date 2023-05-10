@@ -16,6 +16,8 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     private GridCursor _gridCursor;
 
+    private Cursor _cursor;
+
     [SerializeField]
     private UIInventoryBar _inventoryBar = null;
 
@@ -52,12 +54,16 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         _camera = Camera.main;
         _gridCursor = FindObjectOfType<GridCursor>();
+        _cursor = FindObjectOfType<Cursor>();
     }
 
     private void ClearCursors()
     {
         _gridCursor.DisableCursor();
+        _cursor.DisableCursor();
+
         _gridCursor.SelectedItemType = ItemType.None;
+        _cursor.SelectedItemType = ItemType.None;
     }
 
     private void OnEnable()
@@ -243,7 +249,10 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         this.InventorySlotHighlight.SetImageOpaque();
 
         _gridCursor.ItemUseGridRadius = this.ItemDetails.ItemUseGridRadius;
+        _cursor.ItemUseRadius = this.ItemDetails.ItemUseRadius;
+
         _gridCursor.SelectedItemType = this.ItemDetails.ItemType;
+        _cursor.SelectedItemType = this.ItemDetails.ItemType;
 
         // If item requires a grid cursor then enable it
         if (ItemDetails.ItemUseGridRadius > 0)
@@ -253,6 +262,16 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         else
         {
             _gridCursor.DisableCursor();
+        }
+
+        // If item requires a cursor then enable it
+        if (ItemDetails.ItemUseRadius > 0f)
+        {
+            _cursor.EnableCursor();
+        }
+        else
+        {
+            _cursor.DisableCursor();
         }
 
         InventoryManager.Instance.SetSelectedInventoryItem(InventoryLocation.Player, this.ItemDetails.ItemCode);

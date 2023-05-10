@@ -1,4 +1,7 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.Tracing;
+using TMPro.EditorUtilities;
 using UnityEngine;
 
 public class Player : SingletonMonobehavior<Player>
@@ -71,6 +74,8 @@ public class Player : SingletonMonobehavior<Player>
 
     private GridCursor _gridCursor;
 
+    private Cursor _cursor;
+
     private Rigidbody2D _rigidBody;
 
     private Direction _playerDirection;
@@ -83,6 +88,13 @@ public class Player : SingletonMonobehavior<Player>
 
     private AnimationOverrides _animationOverrides;
 
+    private CharacterAttribute _armsNoneCharacterAttribute;
+    private CharacterAttribute _armsCarryCharacterAttribute;
+
+    private CharacterAttribute _toolHoeCharacterAttribute;
+    private CharacterAttribute _toolWateringCanCharacterAttribute;
+    private CharacterAttribute _toolScytheCharacterAttribute;
+
     [SerializeField]
     private SpriteRenderer _equippedItemSpriteRenderer = null;
 
@@ -90,6 +102,12 @@ public class Player : SingletonMonobehavior<Player>
     public bool PlayerInputIsDisabled { get => _playerInputIsDisabled; set => _playerInputIsDisabled = value; }
 
     public Vector3 GetViewportPosition() => _camera.WorldToViewportPoint(transform.position);
+
+    public Vector3 GetPlayerCenterPosition() =>
+        new Vector3(
+            transform.position.x,
+            transform.position.y + Settings.PlayerCenterYOffset,
+            transform.position.z);
 
     public void SetPlayerInputDisabled(bool isDisabled = true, bool resetMovementOnDisabled = true)
     {
@@ -107,8 +125,7 @@ public class Player : SingletonMonobehavior<Player>
         _equippedItemSpriteRenderer.SetImageTransparent();
 
         // Apply base character arms customization
-        _animationOverrides.ApplyCharacterCustomizationParameters(
-            new[] { new CharacterAttribute(CharacterPartAnimator.Arms) });
+        _animationOverrides.ApplyCharacterCustomizationParameters(new[] { _armsNoneCharacterAttribute });
 
         _isCarrying = false;
     }
@@ -123,8 +140,7 @@ public class Player : SingletonMonobehavior<Player>
         _equippedItemSpriteRenderer.SetImageOpaque();
 
         // Apply "Carry" character arms customization
-        _animationOverrides.ApplyCharacterCustomizationParameters(
-            new[] { new CharacterAttribute(CharacterPartAnimator.Arms, partVariantType: PartVariantType.Carry) });
+        _animationOverrides.ApplyCharacterCustomizationParameters(new[] { _armsCarryCharacterAttribute });
 
         _isCarrying = true;
     }
@@ -147,11 +163,40 @@ public class Player : SingletonMonobehavior<Player>
         _camera = Camera.main;
 
         _animationOverrides = GetComponentInChildren<AnimationOverrides>();
+
+        _armsNoneCharacterAttribute = new CharacterAttribute(CharacterPartAnimator.Arms, PartVariantColor.None, PartVariantType.None);
+        _armsCarryCharacterAttribute = new CharacterAttribute(CharacterPartAnimator.Arms, PartVariantColor.None, PartVariantType.Carry);
+        _toolHoeCharacterAttribute = new CharacterAttribute(CharacterPartAnimator.Tool, PartVariantColor.None, PartVariantType.Hoe);
+        _toolWateringCanCharacterAttribute = new CharacterAttribute(CharacterPartAnimator.Tool, PartVariantColor.None, PartVariantType.WateringCan);
+        _toolScytheCharacterAttribute = new CharacterAttribute(CharacterPartAnimator.Tool, PartVariantColor.None, PartVariantType.Scythe);
+    }
+
+    private void OnEnable()
+    {
+        EventHandler.BeforeSceneUnloadFadeOutEvent += BeforeSceneUnloadFadeOut;
+        EventHandler.AfterSceneLoadFadeInEvent += AfterSceneLoadFadeIn;
+    }
+
+    private void OnDisable()
+    {
+        EventHandler.BeforeSceneUnloadFadeOutEvent -= BeforeSceneUnloadFadeOut;
+        EventHandler.AfterSceneLoadFadeInEvent -= AfterSceneLoadFadeIn;
+    }
+
+    private void BeforeSceneUnloadFadeOut()
+    {
+        SetPlayerInputDisabled();
+    }
+
+    private void AfterSceneLoadFadeIn()
+    {
+        SetPlayerInputDisabled(false);
     }
 
     private void Start()
     {
         _gridCursor = FindObjectOfType<GridCursor>();
+        _cursor = FindObjectOfType<Cursor>();
     }
 
     private void Update()
@@ -267,7 +312,7 @@ public class Player : SingletonMonobehavior<Player>
 
         if (Input.GetMouseButtonDown(Global.Inputs.MouseButtons.Left))
         {
-            if (_gridCursor.CursorIsEnabled)
+            if (_gridCursor.CursorIsEnabled || _cursor.CursorIsEnabled)
             {
                 ProcessPlayerClickInput();
             }
@@ -293,6 +338,7 @@ public class Player : SingletonMonobehavior<Player>
             // case other tools also following same path?
             case ItemType.HoeingTool:
             case ItemType.WateringTool:
+            case ItemType.ReapingTool:
                 ProcessPlayerClickInputTool(itemDetails);
                 break;
         }
@@ -312,6 +358,30 @@ public class Player : SingletonMonobehavior<Player>
         return Vector3Int.down;
     }
 
+    private Vector3Int GetPlayerDirection(Vector3 cursorPosition, Vector3 playerPosition)
+    {
+        if ((cursorPosition.x > playerPosition.x) &&
+            (cursorPosition.y < (playerPosition.y + _cursor.ItemUseRadius / 2f)) &&
+            (cursorPosition.y > (playerPosition.y - _cursor.ItemUseRadius / 2f)))
+        {
+            return Vector3Int.right;
+        }
+
+        if ((cursorPosition.x < playerPosition.x) &&
+            (cursorPosition.y < (playerPosition.y + _cursor.ItemUseRadius / 2f)) &&
+            (cursorPosition.y > (playerPosition.y - _cursor.ItemUseRadius / 2f)))
+        {
+            return Vector3Int.left;
+        }
+
+        if (cursorPosition.y > playerPosition.y)
+        {
+            return Vector3Int.up;
+        }
+
+        return Vector3Int.down;
+    }
+
     private void ProcessPlayerClickInputTool(ItemDetails itemDetails)
     {
         var cursorGridPosition = _gridCursor.GetGridPositionForCursor();
@@ -319,16 +389,26 @@ public class Player : SingletonMonobehavior<Player>
         var playerClickDirection = GetPlayerClickDirection(cursorGridPosition, playerGridPosition);
         var gridPropertyDetails = GridPropertiesManager.Instance.GetGridPropertyDetails(cursorGridPosition.x, cursorGridPosition.y);
 
-        if (!_gridCursor.CursorPositionIsValid)
-            return;
-
         switch (itemDetails.ItemType)
         {
             case ItemType.HoeingTool:
-                HoeGroundAtCursor(gridPropertyDetails, playerClickDirection);
+                if (_gridCursor.CursorPositionIsValid)
+                {
+                    HoeGroundAtCursor(gridPropertyDetails, playerClickDirection);
+                }
                 break;
             case ItemType.WateringTool:
-                WaterGroundAtCursor(gridPropertyDetails, playerClickDirection);
+                if (_gridCursor.CursorPositionIsValid)
+                {
+                    WaterGroundAtCursor(gridPropertyDetails, playerClickDirection);
+                }
+                break;
+            case ItemType.ReapingTool:
+                if (_cursor.CursorPositionIsValid)
+                {
+                    playerClickDirection = GetPlayerDirection(_cursor.GetWorldPositionForCursor(), GetPlayerCenterPosition());
+                    ReapInPlayerDirectionAtCursor(itemDetails, playerClickDirection);
+                }
                 break;
         }
     }
@@ -349,6 +429,68 @@ public class Player : SingletonMonobehavior<Player>
         }
     }
 
+    private void ReapInPlayerDirectionAtCursor(ItemDetails itemDetails, Vector3Int playerDirection)
+    {
+        StartCoroutine(ReapInPlayerDirectionAtCursorRoutine(itemDetails, playerDirection));
+    }
+
+    private IEnumerator ReapInPlayerDirectionAtCursorRoutine(ItemDetails itemDetails, Vector3Int playerDirection)
+    {
+        _playerInputIsDisabled = true;
+        _playerToolUseDisabled = true;
+
+        _animationOverrides.ApplyCharacterCustomizationParameters(new[] { _toolScytheCharacterAttribute });
+
+        // Reap in player direction
+        UseToolInPlayerDirection(itemDetails, playerDirection);
+
+        yield return _useToolAnimationPause;
+
+        _playerInputIsDisabled = false;
+        _playerToolUseDisabled = false;
+    }
+
+    private void UseToolInPlayerDirection(ItemDetails equippedItemDetails, Vector3Int playerDirection)
+    {
+        // Input.GetMouseButton(0) ... why are we checking this again??
+        switch (equippedItemDetails.ItemType)
+        {
+            case ItemType.ReapingTool:
+                if (playerDirection == Vector3Int.right)        _isSwingingToolRight = true;
+                else if (playerDirection == Vector3Int.left)    _isSwingingToolLeft = true;
+                else if (playerDirection == Vector3Int.up)      _isSwingingToolUp = true;
+                else if (playerDirection == Vector3Int.down)    _isSwingingToolDown = true;
+                break;
+        }
+
+        // Define center point of square which will be used for collision testing
+        var playerCenterPosition = GetPlayerCenterPosition();
+        var point = new Vector2(
+            playerCenterPosition.x + (playerDirection.x * (equippedItemDetails.ItemUseRadius / 2f)),
+            playerCenterPosition.y + (playerDirection.y * (equippedItemDetails.ItemUseRadius / 2f)));
+
+        // Define size of the square which will be used for collision testing
+        var size = new Vector2(equippedItemDetails.ItemUseRadius, equippedItemDetails.ItemUseRadius);
+
+        // get item components with 2D collider located in the square at the center point defined (2d colliders tested limited to MaxCollidersToTestPerReapSwing)
+        foreach (var component in Util.GetComponentsAtBoxLocationNonAlloc<Item>(Settings.MaxCollidersToTestPerReapSwing, point, size, 0f))
+        {
+            if (InventoryManager.Instance.GetItemDetails(component.ItemCode).ItemType != ItemType.ReapableScenery)
+                continue;
+
+            // Effect position
+            /*
+            var effectPosition =
+                new Vector3(
+                    component.transform.position.x,
+                    component.transform.position.y + Settings.GridCellSize / 2f,
+                    component.transform.position.z);
+            */
+
+            Destroy(component.gameObject);
+        }
+    }
+
     private void WaterGroundAtCursor(GridPropertyDetails gridPropertyDetails, Vector3Int playerClickDirection)
     {
         // Trigger animation
@@ -360,9 +502,8 @@ public class Player : SingletonMonobehavior<Player>
         _playerInputIsDisabled = true;
         _playerToolUseDisabled = true;
 
-        // Set tool animation to hoe in override animation
-        _animationOverrides.ApplyCharacterCustomizationParameters(
-            new[] { new CharacterAttribute(CharacterPartAnimator.Tool, partVariantType: PartVariantType.WateringCan) });
+        // Set tool animation to watering can in override animation
+        _animationOverrides.ApplyCharacterCustomizationParameters(new[] { _toolWateringCanCharacterAttribute });
 
         // TODO: if there is water in the watering can
         _toolEffect = ToolEffect.Watering;
@@ -418,7 +559,7 @@ public class Player : SingletonMonobehavior<Player>
 
         // Set tool animation to hoe in override animation
         _animationOverrides.ApplyCharacterCustomizationParameters(
-            new[] { new CharacterAttribute(CharacterPartAnimator.Tool, partVariantType: PartVariantType.Hoe) });
+            new[] { _toolHoeCharacterAttribute });
 
         if (playerClickDirection == Vector3Int.right)
         {

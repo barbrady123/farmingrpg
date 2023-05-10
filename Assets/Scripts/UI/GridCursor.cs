@@ -129,7 +129,11 @@ public class GridCursor : MonoBehaviour
                 }
                 break;
             case ItemType.WateringTool:
+            case ItemType.BreakingTool:
+            case ItemType.ChoppingTool:
             case ItemType.HoeingTool:
+            case ItemType.ReapingTool:
+            case ItemType.CollectingTool:
                 if (!IsCursorValidForTool(gridPropertyDetails, itemDetails))
                 {
                     SetCursorToInvalid();
@@ -173,7 +177,6 @@ public class GridCursor : MonoBehaviour
                 return (reapableItem == null);
             case ItemType.WateringTool:
                 return (gridPropertyDetails.DaysSinceDug >= 0) && (gridPropertyDetails.DaysSinceWatered < 0);
-
         }
 
         return false;

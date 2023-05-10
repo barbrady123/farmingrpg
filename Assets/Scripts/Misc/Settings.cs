@@ -38,6 +38,11 @@ public static class Settings
 
     public static int PlayerMaximumInventoryCapacity = 48;
 
+    // Reaping
+    public const int MaxCollidersToTestPerReapSwing = 15;
+
+    public const int MaxTargetComponentsToDestroyPerReapSwing = 15;
+
     #region Animation Parameters
     public static int xInput = Animator.StringToHash(nameof(xInput));
 
