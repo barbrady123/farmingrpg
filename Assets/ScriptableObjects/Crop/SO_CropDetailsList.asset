@@ -15,7 +15,6 @@ MonoBehaviour:
   CropDetails:
   - SeedItemCode: 10006
     GrowthDays: 0000000001000000010000000100000002000000
-    TotalGrowthDays: 5
     GrowthPrefab:
     - {fileID: 2280809463137325019, guid: f2e70abf7060d564bb616993f991a69e, type: 3}
     - {fileID: 2280809463137325019, guid: f2e70abf7060d564bb616993f991a69e, type: 3}
@@ -35,7 +34,7 @@ MonoBehaviour:
     DisableCropCollidersBeforeHarvestedAnimation: 0
     IsHarvestedAnimation: 1
     IsHarvestActionEffect: 0
-    SpawnCropProducedAtPlayerPosition: 1
+    SpawnCropProducedInPlayerInventory: 1
     HarvestActionEffect: 5
     HarvestToolItemCode: 1c270000
     RequiresHarvestActions: 01000000

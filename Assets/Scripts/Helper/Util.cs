@@ -44,4 +44,17 @@ public static class Util
             }
         }
     }
+
+    public static (bool isRight, bool isLeft, bool isUp, bool IsDown) Vector3IntDirectionToFlag(Vector3Int direction)
+    {
+        if (direction == Vector3Int.right)
+            return (true, false, false, false);
+        else if (direction == Vector3Int.left)
+            return (false, true, false, false);
+        else if (direction == Vector3Int.up)
+            return (false, false, true, false);
+        else if (direction == Vector3Int.down)
+            return (false, false, false, true);
+        return (false, false, false, false);
+    }
 }

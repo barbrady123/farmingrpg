@@ -70,7 +70,7 @@ public class InventoryManager : SingletonMonobehavior<InventoryManager>
         };
     }
 
-    public bool AddItem(InventoryLocation inventoryLocation, Item item, int quantity = 1)
+    public bool AddItem(InventoryLocation inventoryLocation, int itemCode, int quantity = 1)
     {
         if (quantity <= 0)
             return false;
@@ -78,13 +78,13 @@ public class InventoryManager : SingletonMonobehavior<InventoryManager>
         var inventory = this.InventoryLists[(int)inventoryLocation];
         int capacity = this.InventoryListCapaciyIntArray[(int)inventoryLocation];
 
-        var currentItem = inventory.FirstOrDefault(x => x.ItemCode == item.ItemCode);
+        var currentItem = inventory.FirstOrDefault(x => x.ItemCode == itemCode);
         if (currentItem == null)
         {
             if (inventory.Count >= capacity)
                 return false;
 
-            currentItem = new InventoryItem(item.ItemCode);
+            currentItem = new InventoryItem(itemCode);
             inventory.Add(currentItem);
         }
 
@@ -95,16 +95,21 @@ public class InventoryManager : SingletonMonobehavior<InventoryManager>
         return true;
     }
 
-    public void RemoveItem(InventoryLocation inventoryLocation, int itemCode, int quantity = 1)
-    {
-        if (quantity <= 0)
-            return;
+    public bool AddItem(InventoryLocation inventoryLocation, Item item, int quantity = 1) => AddItem(inventoryLocation, item.ItemCode, quantity);
 
+    /// <summary>
+    /// Returns remaining quantity
+    /// </summary>
+    public int RemoveItem(InventoryLocation inventoryLocation, int itemCode, int quantity = 1)
+    {
         var inventory = this.InventoryLists[(int)inventoryLocation];
 
         var currentItem = inventory.FirstOrDefault(x => x.ItemCode == itemCode);
         if (currentItem == null)
-            return;
+            return 0;
+
+        if (quantity <= 0)
+            return currentItem.ItemQuantity;
 
         currentItem.ItemQuantity -= quantity;
 
@@ -114,6 +119,7 @@ public class InventoryManager : SingletonMonobehavior<InventoryManager>
         }
 
         EventHandler.CallInventoryUpdatedEvent(inventoryLocation, inventory);
+        return currentItem.ItemQuantity;
     }
 
     public void SwapInventoryItem(InventoryLocation inventoryLocation, int fromSlotNumber, int toSlotNumber)

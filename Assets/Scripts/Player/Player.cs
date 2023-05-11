@@ -1,7 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics.Tracing;
-using TMPro.EditorUtilities;
 using UnityEngine;
 
 public class Player : SingletonMonobehavior<Player>
@@ -62,6 +59,7 @@ public class Player : SingletonMonobehavior<Player>
     private ToolEffect _toolEffect = ToolEffect.None;
     #endregion
 
+    #region WaitForSeconds caching
     private WaitForSeconds _useToolAnimationPause = new WaitForSeconds(Settings.UseToolAnimationPause);
 
     private WaitForSeconds _afterUseToolAnimationPause = new WaitForSeconds(Settings.AfterUseToolAnimationPause);
@@ -69,6 +67,11 @@ public class Player : SingletonMonobehavior<Player>
     private WaitForSeconds _liftToolAnimationPause = new WaitForSeconds(Settings.LiftToolAnimationPause);
 
     private WaitForSeconds _afterLiftToolAnimationPause = new WaitForSeconds(Settings.AfterLiftToolAnimationPause);
+
+    private WaitForSeconds _collectAnimationPause = new WaitForSeconds(Settings.CollectAnimationPause);
+
+    private WaitForSeconds _afterCollectAnimationPause = new WaitForSeconds(Settings.AfterCollectAnimationPause);
+    #endregion
 
     private bool _playerToolUseDisabled = false;
 
@@ -322,10 +325,15 @@ public class Player : SingletonMonobehavior<Player>
         if (itemDetails == null)
             return;
 
+        var cursorGridPosition = _gridCursor.GetGridPositionForCursor();
+        var playerGridPosition = _gridCursor.GetGridPositionForPlayer();
+        var playerClickDirection = GetPlayerClickDirection(cursorGridPosition, playerGridPosition);
+        var gridPropertyDetails = GridPropertiesManager.Instance.GetGridPropertyDetails(cursorGridPosition.x, cursorGridPosition.y);
+
         switch (itemDetails.ItemType)
         {
             case ItemType.Seed:
-                ProcessPlayerClickInputSeed(itemDetails);
+                ProcessPlayerClickInputSeed(itemDetails, gridPropertyDetails);
                 break;
             case ItemType.Commodity:
                 ProcessPlayerClickInputCommondity(itemDetails);
@@ -334,7 +342,8 @@ public class Player : SingletonMonobehavior<Player>
             case ItemType.HoeingTool:
             case ItemType.WateringTool:
             case ItemType.ReapingTool:
-                ProcessPlayerClickInputTool(itemDetails);
+            case ItemType.CollectingTool:
+                ProcessPlayerClickInputTool(itemDetails, gridPropertyDetails, playerClickDirection);
                 break;
         }
     }
@@ -377,13 +386,8 @@ public class Player : SingletonMonobehavior<Player>
         return Vector3Int.down;
     }
 
-    private void ProcessPlayerClickInputTool(ItemDetails itemDetails)
+    private void ProcessPlayerClickInputTool(ItemDetails itemDetails, GridPropertyDetails gridPropertyDetails, Vector3Int playerClickDirection)
     {
-        var cursorGridPosition = _gridCursor.GetGridPositionForCursor();
-        var playerGridPosition = _gridCursor.GetGridPositionForPlayer();
-        var playerClickDirection = GetPlayerClickDirection(cursorGridPosition, playerGridPosition);
-        var gridPropertyDetails = GridPropertiesManager.Instance.GetGridPropertyDetails(cursorGridPosition.x, cursorGridPosition.y);
-
         switch (itemDetails.ItemType)
         {
             case ItemType.HoeingTool:
@@ -405,15 +409,37 @@ public class Player : SingletonMonobehavior<Player>
                     ReapInPlayerDirectionAtCursor(itemDetails, playerClickDirection);
                 }
                 break;
+            case ItemType.CollectingTool:
+                if (_gridCursor.CursorPositionIsValid)
+                {
+                    CollectInPlayerDirection(gridPropertyDetails, itemDetails, playerClickDirection);
+                }
+                break;
         }
     }
 
-    private void ProcessPlayerClickInputSeed(ItemDetails itemDetails)
+    private void ProcessPlayerClickInputSeed(ItemDetails itemDetails, GridPropertyDetails gridPropertyDetails)
     {
         if (itemDetails.CanBeDropped && _gridCursor.CursorPositionIsValid)
         {
+            if ((gridPropertyDetails.DaysSinceDug >= 0) && (itemDetails.ItemCode > 0))
+            {
+                PlantSeedAtCursor(itemDetails, gridPropertyDetails);
+                return;
+            }
+
             EventHandler.CallDropSelectedItemEvent();
         }
+    }
+
+    private void PlantSeedAtCursor(ItemDetails itemDetails, GridPropertyDetails gridPropertyDetails)
+    {
+        gridPropertyDetails.SeedItemCode = itemDetails.ItemCode;
+        gridPropertyDetails.GrowthDays = 0;
+
+        GridPropertiesManager.Instance.DisplayPlantedCrop(gridPropertyDetails);
+
+        EventHandler.CallRemoveSelectedItemFromInventoryEvent();
     }
 
     private void ProcessPlayerClickInputCommondity(ItemDetails itemDetails)
@@ -421,6 +447,42 @@ public class Player : SingletonMonobehavior<Player>
         if (itemDetails.CanBeDropped && _gridCursor.CursorPositionIsValid)
         {
             EventHandler.CallDropSelectedItemEvent();
+        }
+    }
+
+    private void CollectInPlayerDirection(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails, Vector3Int playerClickDirection)
+    {
+        StartCoroutine(CollectInPlayerDirectionRoutine(gridPropertyDetails, itemDetails, playerClickDirection));
+    }
+
+    private IEnumerator CollectInPlayerDirectionRoutine(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails, Vector3Int playerClickDirection)
+    {
+        _playerInputIsDisabled = true;
+        _playerToolUseDisabled = true;
+
+        ProcessCropWithEquippedItemInPlayerDirection(gridPropertyDetails, itemDetails, playerClickDirection);
+
+        yield return _collectAnimationPause;
+
+        yield return _afterCollectAnimationPause;
+
+        _playerInputIsDisabled = false;
+        _playerToolUseDisabled = false;
+    }
+
+    private void ProcessCropWithEquippedItemInPlayerDirection(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails, Vector3Int playerClickDirection)
+    {
+        (_isPickingRight, _isPickingLeft, _isPickingUp, _isPickingDown) = Util.Vector3IntDirectionToFlag(playerClickDirection);
+
+        var crop = GridPropertiesManager.Instance.GetCropObjectAtGridLocation(gridPropertyDetails.GridX, gridPropertyDetails.GridY);
+        if (crop == null)
+            return;
+
+        switch (itemDetails.ItemType)
+        {
+            case ItemType.CollectingTool:
+                crop.ProcessToolAction(itemDetails);
+                break;
         }
     }
 
@@ -447,16 +509,7 @@ public class Player : SingletonMonobehavior<Player>
 
     private void UseToolInPlayerDirection(ItemDetails equippedItemDetails, Vector3Int playerDirection)
     {
-        // Input.GetMouseButton(0) ... why are we checking this again??
-        switch (equippedItemDetails.ItemType)
-        {
-            case ItemType.ReapingTool:
-                if (playerDirection == Vector3Int.right)        _isSwingingToolRight = true;
-                else if (playerDirection == Vector3Int.left)    _isSwingingToolLeft = true;
-                else if (playerDirection == Vector3Int.up)      _isSwingingToolUp = true;
-                else if (playerDirection == Vector3Int.down)    _isSwingingToolDown = true;
-                break;
-        }
+        (_isSwingingToolRight, _isSwingingToolLeft, _isSwingingToolUp, _isSwingingToolDown) = Util.Vector3IntDirectionToFlag(playerDirection);
 
         // Define center point of square which will be used for collision testing
         var playerCenterPosition = GetPlayerCenterPosition();

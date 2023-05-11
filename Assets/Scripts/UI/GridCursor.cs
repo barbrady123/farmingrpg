@@ -24,6 +24,9 @@ public class GridCursor : MonoBehaviour
     [SerializeField]
     private Sprite _redCursorSprite = null;
 
+    [SerializeField]
+    private SO_CropDetailsList _so_CropDetailsList = null;
+
     private bool _cursorPositionIsValid = false;
 
     public bool CursorPositionIsValid { get => _cursorPositionIsValid; set => _cursorPositionIsValid = value; }
@@ -177,6 +180,15 @@ public class GridCursor : MonoBehaviour
                 return (reapableItem == null);
             case ItemType.WateringTool:
                 return (gridPropertyDetails.DaysSinceDug >= 0) && (gridPropertyDetails.DaysSinceWatered < 0);
+            case ItemType.CollectingTool:
+                var cropDetails = _so_CropDetailsList.GetCropDetails(gridPropertyDetails.SeedItemCode);
+                if (cropDetails == null)
+                    return false;
+
+                if (gridPropertyDetails.GrowthDays < cropDetails.TotalGrowthDays)
+                    return false;
+
+                return cropDetails.CanUseToolToHarvestCrop(itemDetails.ItemCode);
         }
 
         return false;

@@ -16,6 +16,18 @@ public static class EventHandler
     }
     #endregion
 
+    #region Remove Selected Item From Inventory Event
+    public static event Action RemoveSelectedItemFromInventoryEvent;
+
+    public static void CallRemoveSelectedItemFromInventoryEvent()
+    {
+        if (RemoveSelectedItemFromInventoryEvent != null)
+        {
+            RemoveSelectedItemFromInventoryEvent();
+        }
+    }
+    #endregion
+
     #region Harvest Action Effect Event
     public static event Action<Vector3, HarvestActionEffect> HarvestActionEffectEvent;
 

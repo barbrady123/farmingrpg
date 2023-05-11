@@ -10,7 +10,7 @@ public class CropDetails
 
     public int[] GrowthDays;    // days growth for each stage
 
-    public int TotalGrowthDays;     // total growth days
+    public int TotalGrowthDays => this.GrowthDays.Sum();
 
     public GameObject[] GrowthPrefab;   // Prefab to use when instantiating growth stages
 
@@ -31,7 +31,7 @@ public class CropDetails
 
     public bool IsHarvestActionEffect = false;      // flag to determine whether there is a harvest action effect
 
-    public bool SpawnCropProducedAtPlayerPosition;
+    public bool SpawnCropProducedInPlayerInventory;
 
     public HarvestActionEffect HarvestActionEffect;     // the harvest action effect for the crop
 
@@ -55,5 +55,20 @@ public class CropDetails
     {
         var harvestTool = HarvestToolItemCode.Cast<int?>().WithIndex().FirstOrDefault(x => x.item == toolItemCode);
         return harvestTool.item != null ? this.RequiresHarvestActions[harvestTool.index] : -1;
+    }
+
+    public int GetGrowthStageForDays(int days)
+    {
+        int totalDays = this.GrowthDays.Sum();
+
+        for (int x = this.GrowthDays.Length - 1; x >= 0; x--)
+        {
+            if (days >= totalDays)
+                return x;
+
+            totalDays -= this.GrowthDays[x];
+        }
+
+        return 0;
     }
 }
