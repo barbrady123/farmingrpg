@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public static class EventHandler
 {
@@ -12,6 +13,18 @@ public static class EventHandler
             return;
 
         DropSelectedItemEvent();
+    }
+    #endregion
+
+    #region Harvest Action Effect Event
+    public static event Action<Vector3, HarvestActionEffect> HarvestActionEffectEvent;
+
+    public static void CallHarvestActionEffectEvent(Vector3 effectPosition, HarvestActionEffect harvestActionEffect)
+    {
+        if (HarvestActionEffectEvent != null)
+        {
+            HarvestActionEffectEvent(effectPosition, harvestActionEffect);
+        }
     }
     #endregion
 

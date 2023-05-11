@@ -474,13 +474,14 @@ public class Player : SingletonMonobehavior<Player>
                 continue;
 
             // Effect position
-            /*
             var effectPosition =
                 new Vector3(
                     component.transform.position.x,
                     component.transform.position.y + Settings.GridCellSize / 2f,
                     component.transform.position.z);
-            */
+
+            // Trigger Reaping Effect
+            EventHandler.CallHarvestActionEffectEvent(effectPosition, HarvestActionEffect.Reaping);
 
             Destroy(component.gameObject);
         }
