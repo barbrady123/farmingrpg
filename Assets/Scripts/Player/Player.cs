@@ -422,7 +422,7 @@ public class Player : SingletonMonobehavior<Player>
     {
         if (itemDetails.CanBeDropped && _gridCursor.CursorPositionIsValid)
         {
-            if ((gridPropertyDetails.DaysSinceDug >= 0) && (itemDetails.ItemCode > 0))
+            if ((gridPropertyDetails.DaysSinceDug >= 0) && (gridPropertyDetails.SeedItemCode < 0) && (GridPropertiesManager.Instance.GetCropDetails(itemDetails.ItemCode) != null))
             {
                 PlantSeedAtCursor(itemDetails, gridPropertyDetails);
                 return;
@@ -481,7 +481,7 @@ public class Player : SingletonMonobehavior<Player>
         switch (itemDetails.ItemType)
         {
             case ItemType.CollectingTool:
-                crop.ProcessToolAction(itemDetails);
+                crop.ProcessToolAction(itemDetails, _isPickingRight, _isPickingLeft, _isPickingUp, _isPickingDown);
                 break;
         }
     }

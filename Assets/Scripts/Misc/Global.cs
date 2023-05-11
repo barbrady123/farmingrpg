@@ -37,4 +37,14 @@ public static class Global
             public const int Right = 1;
         }
     }
+
+    public static class Animations
+    {
+        public static class Triggers
+        {
+            public const string HarvestRight = "harvestright";
+
+            public const string HarvestLeft = "harvestleft";
+        }
+    }
 }
