@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -180,12 +178,13 @@ public class GridCursor : MonoBehaviour
                 return (reapableItem == null);
             case ItemType.WateringTool:
                 return (gridPropertyDetails.DaysSinceDug >= 0) && (gridPropertyDetails.DaysSinceWatered < 0);
+            case ItemType.ChoppingTool:
             case ItemType.CollectingTool:
                 var cropDetails = _so_CropDetailsList.GetCropDetails(gridPropertyDetails.SeedItemCode);
                 if (cropDetails == null)
                     return false;
 
-                if (gridPropertyDetails.GrowthDays < cropDetails.TotalGrowthDays)
+                if (gridPropertyDetails.GrowthDays < cropDetails.GrowthDays.Last())
                     return false;
 
                 return cropDetails.CanUseToolToHarvestCrop(itemDetails.ItemCode);

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CropDetails:
   - SeedItemCode: 10006
-    GrowthDays: 0000000001000000010000000100000002000000
+    GrowthDays: 0000000001000000020000000300000005000000
     GrowthPrefab:
     - {fileID: 2280809463137325019, guid: f2e70abf7060d564bb616993f991a69e, type: 3}
     - {fileID: 2280809463137325019, guid: f2e70abf7060d564bb616993f991a69e, type: 3}
@@ -41,4 +41,33 @@ MonoBehaviour:
     CropProducedItemCode: 17270000
     CropProducedMinQuantity: 01000000
     CropProducedMaxQuantity: 01000000
+    DaysToRegrow: 0
+  - SeedItemCode: 10000
+    GrowthDays: 00000000050000000a0000000f00000014000000
+    GrowthPrefab:
+    - {fileID: 2280809463137325019, guid: f2e70abf7060d564bb616993f991a69e, type: 3}
+    - {fileID: 2280809463137325019, guid: f2e70abf7060d564bb616993f991a69e, type: 3}
+    - {fileID: 2280809463137325019, guid: f2e70abf7060d564bb616993f991a69e, type: 3}
+    - {fileID: 2280809463137325019, guid: f2e70abf7060d564bb616993f991a69e, type: 3}
+    - {fileID: 5478462264974333916, guid: 62cb312feafe18145bc2a5aeef920244, type: 3}
+    GrowthSprite:
+    - {fileID: 5940278866164146339, guid: d241c496741a12d4290e12ba81dd6724, type: 3}
+    - {fileID: -1611693019923910846, guid: d241c496741a12d4290e12ba81dd6724, type: 3}
+    - {fileID: 1388107105281676754, guid: d241c496741a12d4290e12ba81dd6724, type: 3}
+    - {fileID: 6019493940114240039, guid: d241c496741a12d4290e12ba81dd6724, type: 3}
+    - {fileID: 21300000, guid: 89c46045b5f23d840b62099f6f1f6344, type: 3}
+    Seasons: 0000000001000000
+    HarvestedSprite: {fileID: 0}
+    HarvestedTransformItemCode: 10010
+    HideCropBeforeHarvestedAnimation: 0
+    DisableCropCollidersBeforeHarvestedAnimation: 0
+    IsHarvestedAnimation: 1
+    IsHarvestActionEffect: 1
+    SpawnCropProducedInPlayerInventory: 0
+    HarvestActionEffect: 0
+    HarvestToolItemCode: 15270000
+    RequiresHarvestActions: 07000000
+    CropProducedItemCode: 1827000010270000
+    CropProducedMinQuantity: 0200000001000000
+    CropProducedMaxQuantity: 0500000002000000
     DaysToRegrow: 0

@@ -45,6 +45,10 @@ public static class Global
             public const string HarvestRight = "harvestright";
 
             public const string HarvestLeft = "harvestleft";
+
+            public const string UseToolLeft = "usetoolleft";
+
+            public const string UseToolRight = "usetoolright";
         }
     }
 }

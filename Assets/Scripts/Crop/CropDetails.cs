@@ -8,9 +8,7 @@ public class CropDetails
     [ItemCodeDescription]
     public int SeedItemCode;    // this is the item code for the corresponding seed
 
-    public int[] GrowthDays;    // days growth for each stage
-
-    public int TotalGrowthDays => this.GrowthDays.Sum();
+    public int[] GrowthDays;    // total growth days for each stage
 
     public GameObject[] GrowthPrefab;   // Prefab to use when instantiating growth stages
 
@@ -59,16 +57,12 @@ public class CropDetails
 
     public int GetGrowthStageForDays(int days)
     {
-        int totalDays = this.GrowthDays.Sum();
-
         for (int x = this.GrowthDays.Length - 1; x >= 0; x--)
         {
-            if (days >= totalDays)
+            if (days >= this.GrowthDays[x])
                 return x;
-
-            totalDays -= this.GrowthDays[x];
         }
 
-        return 0;
+        throw new Exception($"Unexpected error calculating growth stage for days '{days}'");
     }
 }

@@ -97,6 +97,7 @@ public class Player : SingletonMonobehavior<Player>
     private CharacterAttribute _toolHoeCharacterAttribute;
     private CharacterAttribute _toolWateringCanCharacterAttribute;
     private CharacterAttribute _toolScytheCharacterAttribute;
+    private CharacterAttribute _toolChoppingCharacterAttribute;
 
     [SerializeField]
     private SpriteRenderer _equippedItemSpriteRenderer = null;
@@ -172,6 +173,7 @@ public class Player : SingletonMonobehavior<Player>
         _toolHoeCharacterAttribute = new CharacterAttribute(CharacterPartAnimator.Tool, PartVariantColor.None, PartVariantType.Hoe);
         _toolWateringCanCharacterAttribute = new CharacterAttribute(CharacterPartAnimator.Tool, PartVariantColor.None, PartVariantType.WateringCan);
         _toolScytheCharacterAttribute = new CharacterAttribute(CharacterPartAnimator.Tool, PartVariantColor.None, PartVariantType.Scythe);
+        _toolChoppingCharacterAttribute = new CharacterAttribute(CharacterPartAnimator.Tool, PartVariantColor.None, PartVariantType.Axe);
     }
 
     private void OnEnable()
@@ -338,11 +340,11 @@ public class Player : SingletonMonobehavior<Player>
             case ItemType.Commodity:
                 ProcessPlayerClickInputCommondity(itemDetails);
                 break;
-            // case other tools also following same path?
             case ItemType.HoeingTool:
             case ItemType.WateringTool:
             case ItemType.ReapingTool:
             case ItemType.CollectingTool:
+            case ItemType.ChoppingTool:
                 ProcessPlayerClickInputTool(itemDetails, gridPropertyDetails, playerClickDirection);
                 break;
         }
@@ -415,6 +417,12 @@ public class Player : SingletonMonobehavior<Player>
                     CollectInPlayerDirection(gridPropertyDetails, itemDetails, playerClickDirection);
                 }
                 break;
+            case ItemType.ChoppingTool:
+                if (_gridCursor.CursorPositionIsValid)
+                {
+                    ChopInPlayerDirection(gridPropertyDetails, itemDetails, playerClickDirection);
+                }
+                break;
         }
     }
 
@@ -450,6 +458,28 @@ public class Player : SingletonMonobehavior<Player>
         }
     }
 
+    private void ChopInPlayerDirection(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails, Vector3Int playerClickDirection)
+    {
+        StartCoroutine(ChopInPlayerDirectionRoutine(gridPropertyDetails, itemDetails, playerClickDirection));
+    }
+
+    private IEnumerator ChopInPlayerDirectionRoutine(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails, Vector3Int playerClickDirection)
+    {
+        _playerInputIsDisabled = true;
+        _playerToolUseDisabled = true;
+
+        _animationOverrides.ApplyCharacterCustomizationParameters(new[] { _toolChoppingCharacterAttribute });
+
+        ProcessCropWithEquippedItemInPlayerDirection(gridPropertyDetails, itemDetails, playerClickDirection);
+
+        yield return _useToolAnimationPause;
+
+        yield return _afterUseToolAnimationPause;
+
+        _playerInputIsDisabled = false;
+        _playerToolUseDisabled = false;
+    }
+
     private void CollectInPlayerDirection(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails, Vector3Int playerClickDirection)
     {
         StartCoroutine(CollectInPlayerDirectionRoutine(gridPropertyDetails, itemDetails, playerClickDirection));
@@ -472,15 +502,18 @@ public class Player : SingletonMonobehavior<Player>
 
     private void ProcessCropWithEquippedItemInPlayerDirection(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails, Vector3Int playerClickDirection)
     {
-        (_isPickingRight, _isPickingLeft, _isPickingUp, _isPickingDown) = Util.Vector3IntDirectionToFlag(playerClickDirection);
-
         var crop = GridPropertiesManager.Instance.GetCropObjectAtGridLocation(gridPropertyDetails.GridX, gridPropertyDetails.GridY);
         if (crop == null)
             return;
 
         switch (itemDetails.ItemType)
         {
+            case ItemType.ChoppingTool:
+                (_isUsingToolRight, _isUsingToolLeft, _isUsingToolUp, _isUsingToolDown) = Util.Vector3IntDirectionToFlag(playerClickDirection);
+                crop.ProcessToolAction(itemDetails, _isUsingToolRight, _isUsingToolLeft, _isUsingToolUp, _isUsingToolDown);
+                break;
             case ItemType.CollectingTool:
+                (_isPickingRight, _isPickingLeft, _isPickingUp, _isPickingDown) = Util.Vector3IntDirectionToFlag(playerClickDirection);
                 crop.ProcessToolAction(itemDetails, _isPickingRight, _isPickingLeft, _isPickingUp, _isPickingDown);
                 break;
         }

@@ -8,6 +8,10 @@ public class Crop : MonoBehaviour
     private int _harvestActionCount = 0;
 
     [SerializeField]
+    [Tooltip("This should be populated from the child transform gameobject showing harvest effect spawn point")]
+    private Transform _harvestActionEffectTransform = null;
+
+    [SerializeField]
     [Tooltip("This should be populated from the child gameobject")]
     private SpriteRenderer _cropHarvestedSpriteRenderer = null;
 
@@ -43,23 +47,30 @@ public class Crop : MonoBehaviour
         if (cropDetails == null)
             return;
 
+        int requiredHarvestActions = cropDetails.RequiresHarvestActionsForTool(itemDetails.ItemCode);
+        if (requiredHarvestActions < 0)
+            return;
+
         // Get animator for crop, if present
         var animator = GetComponentInChildren<Animator>();
+
         if (animator != null)
         {
             if (isToolRight || isToolUp)
             {
-                animator.SetTrigger(Global.Animations.Triggers.HarvestRight);
+                animator.SetTrigger(Global.Animations.Triggers.UseToolRight);
             }
             else if (isToolLeft || isToolDown)
             {
-                animator.SetTrigger(Global.Animations.Triggers.HarvestLeft);
+                animator.SetTrigger(Global.Animations.Triggers.UseToolLeft);
             }
         }
 
-        int requiredHarvestActions = cropDetails.RequiresHarvestActionsForTool(itemDetails.ItemCode);
-        if (requiredHarvestActions < 0)
-            return;
+        // Trigger tool particle effect on crop
+        if (cropDetails.IsHarvestActionEffect)
+        {
+            EventHandler.CallHarvestActionEffectEvent(_harvestActionEffectTransform.position, cropDetails.HarvestActionEffect);
+        }
 
         _harvestActionCount++;
 

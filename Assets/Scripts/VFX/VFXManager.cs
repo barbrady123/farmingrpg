@@ -8,6 +8,9 @@ public class VFXManager : SingletonMonobehavior<VFXManager>
     [SerializeField]
     private GameObject _reapingPrefab = null;
 
+    [SerializeField]
+    private GameObject _deciduousLeavesFallingPrefab = null;
+
     private void OnEnable()
     {
         EventHandler.HarvestActionEffectEvent += DisplayHarvestActionEffect;
@@ -25,6 +28,10 @@ public class VFXManager : SingletonMonobehavior<VFXManager>
             case HarvestActionEffect.Reaping:
                 var reaping = PoolManager.Instance.ReuseObject(_reapingPrefab, effectPosition, Quaternion.identity, true);
                 StartCoroutine(DisableHarvestActionEffect(reaping, _twoSeconds));
+                break;
+            case HarvestActionEffect.DeciduousLeavesFalling:
+                var leavingFalling = PoolManager.Instance.ReuseObject(_deciduousLeavesFallingPrefab, effectPosition, Quaternion.identity, true);
+                StartCoroutine(DisableHarvestActionEffect(leavingFalling, _twoSeconds));
                 break;
         }
     }
