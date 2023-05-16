@@ -108,7 +108,7 @@ public class Crop : MonoBehaviour
         StartCoroutine(ProcessHarvestActionsAfterAnimation(gridPropertyDetails, cropDetails, runningAnimation, animator));
     }
 
-    private IEnumerator ProcessHarvestActionsAfterAnimation(GridPropertyDetails gridProperty, CropDetails cropDetails, bool runningAnimation, Animator animator)
+    private IEnumerator ProcessHarvestActionsAfterAnimation(GridPropertyDetails gridPropertyDetails, CropDetails cropDetails, bool runningAnimation, Animator animator)
     {
         if (runningAnimation)
         {
@@ -119,7 +119,24 @@ public class Crop : MonoBehaviour
         }
 
         SpawnHarvestedItems(cropDetails);
+
+        // Does this crop transform into another crop
+        if (cropDetails.HarvestedTransformItemCode > 0)
+        {
+            CreateHarvestedTransformCrop(gridPropertyDetails, cropDetails);
+        }
+
         Destroy(gameObject);
+    }
+
+    private void CreateHarvestedTransformCrop(GridPropertyDetails gridPropertyDetails, CropDetails cropDetails)
+    {
+        gridPropertyDetails.SeedItemCode = cropDetails.HarvestedTransformItemCode;
+        gridPropertyDetails.GrowthDays = 0;
+        gridPropertyDetails.DaysSinceLastHarvest = -1;
+        gridPropertyDetails.DaysSinceWatered = -1;
+
+        GridPropertiesManager.Instance.DisplayPlantedCrop(gridPropertyDetails);
     }
 
     private void SpawnHarvestedItems(CropDetails cropDetails)

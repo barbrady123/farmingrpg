@@ -4,6 +4,18 @@ using UnityEngine;
 
 public static class EventHandler
 {
+    #region Instantiate Crop Prefabs Event
+    public static event Action InstantiateCropPrefabsEvent;
+
+    public static void CallInstantiateCropPrefabsEvent()
+    {
+        if (InstantiateCropPrefabsEvent == null)
+            return;
+
+        InstantiateCropPrefabsEvent();
+    }
+    #endregion
+
     #region Drop Selected Item Event
     public static event Action DropSelectedItemEvent;
 

@@ -8,6 +8,8 @@ public class SceneSave
 
     public Dictionary<string, GridPropertyDetails> GridPropertyDetailsDictionary;
 
+    public Dictionary<string, bool> BoolDictionary;
+
     public SceneSave() { }
 
     public SceneSave(List<SceneItem> sceneItems)

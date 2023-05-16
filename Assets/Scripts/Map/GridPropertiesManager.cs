@@ -10,6 +10,9 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
 {
     private Grid _grid;
 
+    // TODO: Verify if we need this, the prefabs get destroyed, no?
+    private bool _isFirstTimeLoaded = false;
+
     private Transform _cropParentTransform;
 
     private Tilemap _groundDecoration1;
@@ -357,6 +360,8 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
                 _gridPropertyDictionary = gridPropertyDictionary;
             }
 
+            sceneSave.BoolDictionary = new Dictionary<string, bool> { { nameof(_isFirstTimeLoaded), true } };
+
             // Add scene save to gameobject scene data
             GameObjectSave.SceneData.Add(so_GridProperties.SceneName.ToString(), sceneSave);
         }
@@ -428,12 +433,27 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
     /// <summary>
     /// This lookup should not be here...
     /// </summary>
-    public GridPropertyDetails GetGridPropertyDetails(int gridX, int gridY, Dictionary<string, GridPropertyDetails> gridPropertyDictionary) =>
-        gridPropertyDictionary.TryGetValue($"x{gridX}y{gridY}", out var gridPropertyDetails) ? gridPropertyDetails : null;
+    public GridPropertyDetails GetGridPropertyDetails(int gridX, int gridY, Dictionary<string, GridPropertyDetails> gridPropertyDictionary, bool createNew = false)
+    {
+        if (gridPropertyDictionary.TryGetValue(GridPropertyDetails.Key(gridX, gridY), out var gridPropertyDetails))
+        {
+            return gridPropertyDetails;
+        }
+        else if (createNew)
+        {
+            var newDetails = new GridPropertyDetails(gridX, gridY);
+            gridPropertyDictionary[newDetails.Key()] = newDetails;
+            return newDetails;
+        }
+
+        return null;
+    }
 
     public GridPropertyDetails GetGridPropertyDetails(int gridX, int gridY) => GetGridPropertyDetails(gridX, gridY, _gridPropertyDictionary);
 
     public GridPropertyDetails GetGridPropertyDetails(Vector2Int pos) => GetGridPropertyDetails(pos.x, pos.y);
+
+    public GridPropertyDetails GetGridPropertyDetails(Vector3Int pos) => GetGridPropertyDetails(pos.x, pos.y);
 
     public CropDetails GetCropDetails(int seedItemCode) => _so_CropDetailsList.GetCropDetails(seedItemCode);
 
@@ -445,7 +465,7 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
         gridPropertyDetails.GridX = gridX;
         gridPropertyDetails.GridY = gridY;
 
-        gridPropertyDictionary[$"x{gridX}y{gridY}"] = gridPropertyDetails;
+        gridPropertyDictionary[gridPropertyDetails.Key()] = gridPropertyDetails;
     }
 
     public void SetGridPropertyDetails(int gridX, int gridY, GridPropertyDetails gridPropertyDetails) => SetGridPropertyDetails(gridX, gridY, gridPropertyDetails, _gridPropertyDictionary);
@@ -455,8 +475,11 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
         // Remove old scene save for gameObject if exists
         GameObjectSave.SceneData.Remove(sceneName);
 
+        var sceneSave = new SceneSave(_gridPropertyDictionary);
+        sceneSave.BoolDictionary = new Dictionary<string, bool> { { nameof(_isFirstTimeLoaded), _isFirstTimeLoaded } };
+
         // Add scene save to game object scene data
-        GameObjectSave.SceneData.Add(sceneName, new SceneSave(_gridPropertyDictionary));
+        GameObjectSave.SceneData.Add(sceneName, sceneSave);
     }
 
     public void ISaveableRestoreScene(string sceneName)
@@ -470,6 +493,20 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
             _gridPropertyDictionary = sceneSave.GridPropertyDetailsDictionary;
         }
 
+        if (sceneSave.BoolDictionary != null)
+        {
+            if (sceneSave.BoolDictionary.TryGetValue(nameof(_isFirstTimeLoaded), out bool isFirstTimeLoaded))
+            {
+                _isFirstTimeLoaded = isFirstTimeLoaded;
+            }
+        }
+
+        // TODO: again, verify if we need this, won't the prefabs be gone??
+        if (_isFirstTimeLoaded)
+        {
+            EventHandler.CallInstantiateCropPrefabsEvent();
+        }
+
         // If grid properties exist
         if (_gridPropertyDictionary.Any())
         {
@@ -479,6 +516,8 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
             // Instantiate grid property details for current scene
             DisplayGridPropertyDetails();
         }
+
+        _isFirstTimeLoaded = false;
     }
 
     public Crop GetCropObjectAtGridLocation(int gridX, int gridY)

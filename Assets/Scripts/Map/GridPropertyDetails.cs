@@ -27,6 +27,14 @@ public class GridPropertyDetails
 
     public int DaysSinceLastHarvest = -1;
 
+    public GridPropertyDetails() { }
+
+    public GridPropertyDetails(int gridX, int gridY)
+    {
+        this.GridX = gridX;
+        this.GridY = gridY;
+    }
+
     public void ClearCropData()
     {
         this.SeedItemCode = -1;
@@ -34,4 +42,8 @@ public class GridPropertyDetails
         this.DaysSinceLastHarvest = -1;
         this.DaysSinceWatered = -1; // we should probably leave this, seems kind of independent from the crop status...
     }
+
+    public string Key() => GridPropertyDetails.Key(this.GridX, this.GridY);
+
+    public static string Key(int gridX, int gridY) => $"x{gridX}y{gridY}";
 }
