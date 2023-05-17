@@ -17,6 +17,9 @@ public class VFXManager : SingletonMonobehavior<VFXManager>
     [SerializeField]
     private GameObject _pineConesFallingPrefab = null;
 
+    [SerializeField]
+    private GameObject _breakingStonePrefab = null;
+
     private void OnEnable()
     {
         EventHandler.HarvestActionEffectEvent += DisplayHarvestActionEffect;
@@ -46,6 +49,10 @@ public class VFXManager : SingletonMonobehavior<VFXManager>
             case HarvestActionEffect.PineConesFalling:
                 var pineconesFalling = PoolManager.Instance.ReuseObject(_pineConesFallingPrefab, effectPosition, Quaternion.identity, true);
                 StartCoroutine(DisableHarvestActionEffect(pineconesFalling, _twoSeconds));
+                break;
+            case HarvestActionEffect.BreakingStone:
+                var breakingStone = PoolManager.Instance.ReuseObject(_breakingStonePrefab, effectPosition, Quaternion.identity, true);
+                StartCoroutine(DisableHarvestActionEffect(breakingStone, _twoSeconds));
                 break;
         }
     }

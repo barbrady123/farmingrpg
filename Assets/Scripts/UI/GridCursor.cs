@@ -178,6 +178,7 @@ public class GridCursor : MonoBehaviour
                 return (reapableItem == null);
             case ItemType.WateringTool:
                 return (gridPropertyDetails.DaysSinceDug >= 0) && (gridPropertyDetails.DaysSinceWatered < 0);
+            case ItemType.BreakingTool:
             case ItemType.ChoppingTool:
             case ItemType.CollectingTool:
                 var cropDetails = _so_CropDetailsList.GetCropDetails(gridPropertyDetails.SeedItemCode);

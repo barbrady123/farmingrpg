@@ -98,6 +98,7 @@ public class Player : SingletonMonobehavior<Player>
     private CharacterAttribute _toolWateringCanCharacterAttribute;
     private CharacterAttribute _toolScytheCharacterAttribute;
     private CharacterAttribute _toolChoppingCharacterAttribute;
+    private CharacterAttribute _toolBreakingCharacterAttribute;
 
     [SerializeField]
     private SpriteRenderer _equippedItemSpriteRenderer = null;
@@ -174,6 +175,7 @@ public class Player : SingletonMonobehavior<Player>
         _toolWateringCanCharacterAttribute = new CharacterAttribute(CharacterPartAnimator.Tool, PartVariantColor.None, PartVariantType.WateringCan);
         _toolScytheCharacterAttribute = new CharacterAttribute(CharacterPartAnimator.Tool, PartVariantColor.None, PartVariantType.Scythe);
         _toolChoppingCharacterAttribute = new CharacterAttribute(CharacterPartAnimator.Tool, PartVariantColor.None, PartVariantType.Axe);
+        _toolBreakingCharacterAttribute = new CharacterAttribute(CharacterPartAnimator.Tool, PartVariantColor.None, PartVariantType.Pickaxe);
     }
 
     private void OnEnable()
@@ -345,6 +347,7 @@ public class Player : SingletonMonobehavior<Player>
             case ItemType.ReapingTool:
             case ItemType.CollectingTool:
             case ItemType.ChoppingTool:
+            case ItemType.BreakingTool:
                 ProcessPlayerClickInputTool(itemDetails, gridPropertyDetails, playerClickDirection);
                 break;
         }
@@ -423,6 +426,12 @@ public class Player : SingletonMonobehavior<Player>
                     ChopInPlayerDirection(gridPropertyDetails, itemDetails, playerClickDirection);
                 }
                 break;
+            case ItemType.BreakingTool:
+                if (_gridCursor.CursorPositionIsValid)
+                {
+                    BreakInPlayerDirection(gridPropertyDetails, itemDetails, playerClickDirection);
+                }
+                break;
         }
     }
 
@@ -456,6 +465,28 @@ public class Player : SingletonMonobehavior<Player>
         {
             EventHandler.CallDropSelectedItemEvent();
         }
+    }
+
+    private void BreakInPlayerDirection(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails, Vector3Int playerClickDirection)
+    {
+        StartCoroutine(BreakInPlayerDirectionRoutine(gridPropertyDetails, itemDetails, playerClickDirection));
+    }
+
+    private IEnumerator BreakInPlayerDirectionRoutine(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails, Vector3Int playerClickDirection)
+    {
+        _playerInputIsDisabled = true;
+        _playerToolUseDisabled = true;
+
+        _animationOverrides.ApplyCharacterCustomizationParameters(new[] { _toolBreakingCharacterAttribute });
+
+        ProcessCropWithEquippedItemInPlayerDirection(gridPropertyDetails, itemDetails, playerClickDirection);
+
+        yield return _useToolAnimationPause;
+
+        yield return _afterUseToolAnimationPause;
+
+        _playerInputIsDisabled = false;
+        _playerToolUseDisabled = false;
     }
 
     private void ChopInPlayerDirection(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails, Vector3Int playerClickDirection)
@@ -508,6 +539,7 @@ public class Player : SingletonMonobehavior<Player>
 
         switch (itemDetails.ItemType)
         {
+            case ItemType.BreakingTool:
             case ItemType.ChoppingTool:
                 (_isUsingToolRight, _isUsingToolLeft, _isUsingToolUp, _isUsingToolDown) = Util.Vector3IntDirectionToFlag(playerClickDirection);
                 crop.ProcessToolAction(itemDetails, _isUsingToolRight, _isUsingToolLeft, _isUsingToolUp, _isUsingToolDown);

@@ -105,6 +105,16 @@ public class Crop : MonoBehaviour
             GetComponentInChildren<SpriteRenderer>().enabled = false;
         }
 
+        // Should box collisders be disabled before harvest
+        // (this is necessary for a "crop" like the rock, where it's box collider will "push" the player when it's up animation runs)
+        if (cropDetails.DisableCropCollidersBeforeHarvestedAnimation)
+        {
+            foreach (var collider in GetComponentsInChildren<Collider2D>())
+            {
+                collider.enabled = false;
+            }
+        }
+
         StartCoroutine(ProcessHarvestActionsAfterAnimation(gridPropertyDetails, cropDetails, runningAnimation, animator));
     }
 

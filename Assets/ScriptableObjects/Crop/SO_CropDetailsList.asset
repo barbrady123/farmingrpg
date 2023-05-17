@@ -142,3 +142,45 @@ MonoBehaviour:
     CropProducedMinQuantity: 02000000
     CropProducedMaxQuantity: 03000000
     DaysToRegrow: 0
+  - SeedItemCode: 10014
+    GrowthDays: 00000000
+    GrowthPrefab:
+    - {fileID: 4123466477714064420, guid: adc92aebb5e93d1418203645166337ca, type: 3}
+    GrowthSprite:
+    - {fileID: 21300000, guid: 4fb548784c08c2c40b86a99493efa98d, type: 3}
+    Seasons: 00000000010000000200000003000000
+    HarvestedSprite: {fileID: 21300000, guid: 7700e9e59e6f58e4598ea8f2e5a84cc1, type: 3}
+    HarvestedTransformItemCode: 0
+    HideCropBeforeHarvestedAnimation: 1
+    DisableCropCollidersBeforeHarvestedAnimation: 1
+    IsHarvestedAnimation: 1
+    IsHarvestActionEffect: 1
+    SpawnCropProducedInPlayerInventory: 1
+    HarvestActionEffect: 3
+    HarvestToolItemCode: 1d270000
+    RequiresHarvestActions: 01000000
+    CropProducedItemCode: 1f270000
+    CropProducedMinQuantity: 01000000
+    CropProducedMaxQuantity: 01000000
+    DaysToRegrow: 0
+  - SeedItemCode: 10016
+    GrowthDays: 00000000
+    GrowthPrefab:
+    - {fileID: 4123466477714064420, guid: 3350a9e8d252b3b46a1e1be3f16414df, type: 3}
+    GrowthSprite:
+    - {fileID: 21300000, guid: ffd3a07e9702a614284d1e5a4be9f532, type: 3}
+    Seasons: 00000000010000000200000003000000
+    HarvestedSprite: {fileID: 21300000, guid: 7700e9e59e6f58e4598ea8f2e5a84cc1, type: 3}
+    HarvestedTransformItemCode: 0
+    HideCropBeforeHarvestedAnimation: 1
+    DisableCropCollidersBeforeHarvestedAnimation: 1
+    IsHarvestedAnimation: 1
+    IsHarvestActionEffect: 1
+    SpawnCropProducedInPlayerInventory: 1
+    HarvestActionEffect: 3
+    HarvestToolItemCode: 1d270000
+    RequiresHarvestActions: 02000000
+    CropProducedItemCode: 1f270000
+    CropProducedMinQuantity: 01000000
+    CropProducedMaxQuantity: 01000000
+    DaysToRegrow: 0

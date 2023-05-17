@@ -1055,6 +1055,7 @@ MonoBehaviour:
   _deciduousLeavesFallingPrefab: {fileID: 1843061373076607649, guid: 3864dbaea5b95b740b5350bf3586ce6c, type: 3}
   _choppingTreeTrunkPrefab: {fileID: 2697698387774776854, guid: f3273c9ad4341774387b918d47529df5, type: 3}
   _pineConesFallingPrefab: {fileID: 1843061373076607649, guid: 0daaaae025fcf1445b37cf7d79e532c0, type: 3}
+  _breakingStonePrefab: {fileID: 1885180898647020699, guid: 0300f6eff2495754d844d542c04a9560, type: 3}
 --- !u!4 &316969308
 Transform:
   m_ObjectHideFlags: 0
@@ -2258,6 +2259,8 @@ MonoBehaviour:
     Prefab: {fileID: 2697698387774776854, guid: f3273c9ad4341774387b918d47529df5, type: 3}
   - PoolSize: 5
     Prefab: {fileID: 1843061373076607649, guid: 0daaaae025fcf1445b37cf7d79e532c0, type: 3}
+  - PoolSize: 5
+    Prefab: {fileID: 1885180898647020699, guid: 0300f6eff2495754d844d542c04a9560, type: 3}
   _objectPoolTransform: {fileID: 972408335}
 --- !u!4 &972408335
 Transform:
@@ -3164,6 +3167,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 79aed174fa309454f8592035972454d5, type: 2}
   - {fileID: 11400000, guid: 9fe0991d18a1cbe419f2dd3215737161, type: 2}
   - {fileID: 11400000, guid: fcbd194206167eb428805945f8b16c41, type: 2}
+  - {fileID: 11400000, guid: ddc69cc0e1f846f4a9499006e0ef0037, type: 2}
+  - {fileID: 11400000, guid: da025784eea0dfa4590141683ed8e89b, type: 2}
+  - {fileID: 11400000, guid: 0cc3b9c6701d4ef4f82cb40d033db5ac, type: 2}
+  - {fileID: 11400000, guid: ab717eddb1b23014ab8d44409aabb779, type: 2}
 --- !u!1 &1452766869
 GameObject:
   m_ObjectHideFlags: 0
