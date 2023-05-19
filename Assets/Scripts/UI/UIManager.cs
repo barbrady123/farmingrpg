@@ -7,6 +7,9 @@ public class UIManager : SingletonMonobehavior<UIManager>
     private bool _pauseMenuOn = false;
 
     [SerializeField]
+    private PauseMenuInventoryManagement _pauseMenuInventoryManagement = null;
+
+    [SerializeField]
     private GameObject _pauseMenu = null;
 
     [SerializeField]
@@ -14,6 +17,9 @@ public class UIManager : SingletonMonobehavior<UIManager>
 
     [SerializeField]
     private Button[] _menuButtons = null;
+
+    [SerializeField]
+    private UIInventoryBar _uiInventoryBar = null;
 
     public bool PauseMenuOn { get => _pauseMenuOn; set => _pauseMenuOn = value; }
 
@@ -46,6 +52,9 @@ public class UIManager : SingletonMonobehavior<UIManager>
 
     private void EnablePauseMenu()
     {
+        _uiInventoryBar.DestroyCurrentlyDraggedItems();
+        _uiInventoryBar.ClearCurrentlySelectedItem();
+
         _pauseMenuOn = true;
         Player.Instance.PlayerInputIsDisabled = true;
 
@@ -61,6 +70,8 @@ public class UIManager : SingletonMonobehavior<UIManager>
 
     private void DisablePauseMenu()
     {
+        _pauseMenuInventoryManagement.DestroyCurrentlyDraggedItems();
+
         _pauseMenuOn = false;
         Player.Instance.PlayerInputIsDisabled = false;
         Time.timeScale = 1;
@@ -90,5 +101,10 @@ public class UIManager : SingletonMonobehavior<UIManager>
         }
 
         HighlightButtonForSelectedTab();
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }

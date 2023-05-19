@@ -15,7 +15,7 @@ public class InventoryManager : SingletonMonobehavior<InventoryManager>
     private int[] _selectedInventoryItem;
 
     [HideInInspector]
-    public int[] InventoryListCapaciyIntArray;
+    public int[] InventoryListCapacityIntArray;
 
     public ItemDetails GetItemDetails(int itemCode) => this.ItemDetailsDictionary.TryGetValue(itemCode, out var details) ? details : null;
 
@@ -44,8 +44,8 @@ public class InventoryManager : SingletonMonobehavior<InventoryManager>
             this.InventoryLists[x] = new List<InventoryItem>(Settings.PlayerInitialInventoryCapacity);
         }
 
-        this.InventoryListCapaciyIntArray = new int[this.InventoryLists.Length];
-        this.InventoryListCapaciyIntArray[(int)InventoryLocation.Player] = Settings.PlayerInitialInventoryCapacity;
+        this.InventoryListCapacityIntArray = new int[this.InventoryLists.Length];
+        this.InventoryListCapacityIntArray[(int)InventoryLocation.Player] = Settings.PlayerInitialInventoryCapacity;
 
         _selectedInventoryItem = new int[this.InventoryLists.Length];
         _selectedInventoryItem.SetAllToValue(-1);
@@ -76,7 +76,7 @@ public class InventoryManager : SingletonMonobehavior<InventoryManager>
             return false;
 
         var inventory = this.InventoryLists[(int)inventoryLocation];
-        int capacity = this.InventoryListCapaciyIntArray[(int)inventoryLocation];
+        int capacity = this.InventoryListCapacityIntArray[(int)inventoryLocation];
 
         var currentItem = inventory.FirstOrDefault(x => x.ItemCode == itemCode);
         if (currentItem == null)

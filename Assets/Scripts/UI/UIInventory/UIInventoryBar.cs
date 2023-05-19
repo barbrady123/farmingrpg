@@ -29,6 +29,25 @@ public class UIInventoryBar : MonoBehaviour
         }
     }
 
+    public void DestroyCurrentlyDraggedItems()
+    {
+        foreach (var slot in _inventorySlot)
+        {
+            if (slot.DraggedItem != null)
+            {
+                Destroy(slot.DraggedItem);
+            }
+        }
+    }
+
+    public void ClearCurrentlySelectedItem()
+    {
+        foreach (var slot in _inventorySlot)
+        {
+            slot.ClearSelectedItem();
+        }
+    }
+
     private void OnEnable()
     {
         EventHandler.InventoryUpdatedEvent += InventoryUpdated;

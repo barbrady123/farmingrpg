@@ -1,5 +1,4 @@
 using TMPro;
-using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -44,6 +43,8 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     [HideInInspector]
     public bool IsSelected = false;
+
+    public GameObject DraggedItem { get => _draggedItem; set => _draggedItem = value; }
 
     private void Awake()
     {
