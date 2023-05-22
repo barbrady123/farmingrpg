@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(GenerateGUID))]
 public class SceneItemsManager : SingletonMonobehavior<SceneItemsManager>, ISaveable
@@ -115,5 +116,23 @@ public class SceneItemsManager : SingletonMonobehavior<SceneItemsManager>, ISave
             item.ItemCode = sceneItem.ItemCode;
             item.name = sceneItem.ItemName;
         }
+    }
+
+    public GameObjectSave ISaveableSave()
+    {
+        // Store current scene data
+        ISaveableStoreScene(SceneManager.GetActiveScene().name);
+        return this.GameObjectSave;
+    }
+
+    public void ISaveableLoad(GameSave gameSave)
+    {
+        if (!gameSave.GameObjectData.TryGetValue(ISaveableUniqueID, out var gameObjectSave))
+            return;
+
+        this.GameObjectSave = gameObjectSave;
+
+        // Restore data for current scene
+        ISaveableRestoreScene(SceneManager.GetActiveScene().name);
     }
 }

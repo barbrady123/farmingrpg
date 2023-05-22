@@ -1,9 +1,16 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SaveLoadManager : SingletonMonobehavior<SaveLoadManager>
 {
+    public GameSave GameSave;
+
     public List<ISaveable> SaveableObjectList;
+
+    private string SaveFileName => $"{Application.persistentDataPath}/WildHopeCreek.dat";
 
     protected override void Awake()
     {
@@ -32,5 +39,51 @@ public class SaveLoadManager : SingletonMonobehavior<SaveLoadManager>
         {
             saveableObject.ISaveableRestoreScene(sceneName);
         }
+    }
+
+    public void LoadDataFromFile()
+    {
+        var bf = new BinaryFormatter();
+
+        if (!File.Exists(this.SaveFileName))
+            return;
+
+        var file = File.Open(this.SaveFileName, FileMode.Open);
+
+        var gameSave = (GameSave)bf.Deserialize(file);
+
+        // loop through all ISaveable objects and apply save data
+        foreach (var item in this.SaveableObjectList)
+        {
+            if (gameSave.GameObjectData.ContainsKey(item.ISaveableUniqueID))
+            {
+                item.ISaveableLoad(gameSave);
+            }
+            // else if ISaveableObject unique ID is not in the game object data then destroy object
+            else
+            {
+                Destroy(((Component)item).gameObject);
+            }
+        }
+
+        UIManager.Instance.DisablePauseMenu();
+    }
+
+    public void SaveDataToFile()
+    {
+        foreach (var iSaveableObject in this.SaveableObjectList)
+        {
+            GameSave.GameObjectData[iSaveableObject.ISaveableUniqueID] = iSaveableObject.ISaveableSave();
+        }
+
+        var bf = new BinaryFormatter();
+
+        var file = File.Open(SaveFileName, FileMode.Create);
+
+        bf.Serialize(file, GameSave);
+
+        file.Close();
+
+        UIManager.Instance.DisablePauseMenu();
     }
 }

@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
-using UnityEngine.Video;
 
 [RequireComponent(typeof(GenerateGUID))]
 public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager>, ISaveable
@@ -532,5 +532,23 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
         }
 
         return null;
+    }
+
+    public GameObjectSave ISaveableSave()
+    {
+        // Store current scene data
+        ISaveableStoreScene(SceneManager.GetActiveScene().name);
+        return this.GameObjectSave;
+    }
+
+    public void ISaveableLoad(GameSave gameSave)
+    {
+        if (!gameSave.GameObjectData.TryGetValue(ISaveableUniqueID, out var gameObjectSave))
+            return;
+
+        this.GameObjectSave = gameObjectSave;
+
+        // Restore data for current scene
+        ISaveableRestoreScene(SceneManager.GetActiveScene().name);
     }
 }

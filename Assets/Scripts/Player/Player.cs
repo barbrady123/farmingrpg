@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class Player : SingletonMonobehavior<Player>
+public class Player : SingletonMonobehavior<Player>, ISaveable
 {
     #region Movement Parameters
     private float _xInput;
@@ -87,6 +89,10 @@ public class Player : SingletonMonobehavior<Player>
 
     private bool _playerInputIsDisabled = false;
 
+    private string _iSaveableUniqueID;
+
+    private GameObjectSave _gameObjectSave;
+
     private Camera _camera;
 
     private AnimationOverrides _animationOverrides;
@@ -105,6 +111,10 @@ public class Player : SingletonMonobehavior<Player>
 
     // Player attributes that can be swapped
     public bool PlayerInputIsDisabled { get => _playerInputIsDisabled; set => _playerInputIsDisabled = value; }
+
+    public string ISaveableUniqueID { get => _iSaveableUniqueID; set => _iSaveableUniqueID = value; }
+
+    public GameObjectSave GameObjectSave { get => _gameObjectSave; set => _gameObjectSave = value; }
 
     public Vector3 GetViewportPosition() => _camera.WorldToViewportPoint(transform.position);
 
@@ -176,16 +186,21 @@ public class Player : SingletonMonobehavior<Player>
         _toolScytheCharacterAttribute = new CharacterAttribute(CharacterPartAnimator.Tool, PartVariantColor.None, PartVariantType.Scythe);
         _toolChoppingCharacterAttribute = new CharacterAttribute(CharacterPartAnimator.Tool, PartVariantColor.None, PartVariantType.Axe);
         _toolBreakingCharacterAttribute = new CharacterAttribute(CharacterPartAnimator.Tool, PartVariantColor.None, PartVariantType.Pickaxe);
+
+        _iSaveableUniqueID = GetComponent<GenerateGUID>().GUID;
+        _gameObjectSave = new GameObjectSave();
     }
 
     private void OnEnable()
     {
+        ISaveableRegister();
         EventHandler.BeforeSceneUnloadFadeOutEvent += BeforeSceneUnloadFadeOut;
         EventHandler.AfterSceneLoadFadeInEvent += AfterSceneLoadFadeIn;
     }
 
     private void OnDisable()
     {
+        ISaveableDeregister();
         EventHandler.BeforeSceneUnloadFadeOutEvent -= BeforeSceneUnloadFadeOut;
         EventHandler.AfterSceneLoadFadeInEvent -= AfterSceneLoadFadeIn;
     }
@@ -743,5 +758,89 @@ public class Player : SingletonMonobehavior<Player>
             false,
             false,
             false);
+    }
+
+    public void ISaveableRegister()
+    {
+        SaveLoadManager.Instance.SaveableObjectList.Add(this);
+    }
+
+    public void ISaveableDeregister()
+    {
+        SaveLoadManager.Instance.SaveableObjectList.Remove(this);
+    }
+
+    public GameObjectSave ISaveableSave()
+    {
+        // Delete saveScene for game object if it already exists
+        GameObjectSave.SceneData.Remove(Global.Scenes.Persistent);
+
+        var sceneSave = new SceneSave();
+
+        sceneSave.Vector3Dictionary.Add(Global.Saves.PlayerPosition, new Vector3Serializable(transform.position));
+
+        sceneSave.StringDictionary.Add(Global.Saves.PlayerDirection, _playerDirection.ToString());
+
+        sceneSave.StringDictionary.Add(Global.Saves.CurrentScene, SceneManager.GetActiveScene().name);
+
+        GameObjectSave.SceneData.Add(Global.Scenes.Persistent, sceneSave);
+
+        return this.GameObjectSave;
+    }
+
+    public void ISaveableLoad(GameSave gameSave)
+    {
+        if (!gameSave.GameObjectData.TryGetValue(_iSaveableUniqueID, out var gameObjectSave))
+            return;
+
+        if (!gameObjectSave.SceneData.TryGetValue(Global.Scenes.Persistent, out var sceneSave))
+            return;
+
+        if (sceneSave.StringDictionary.TryGetValue(Global.Saves.CurrentScene, out string currentScene))
+        {
+            var playerPosition = sceneSave.Vector3Dictionary[Global.Saves.PlayerPosition];
+            SceneControllerManager.Instance.FadeAndLoadScene(currentScene, playerPosition.ToVector3());
+        }
+
+        if (sceneSave.StringDictionary.TryGetValue(Global.Saves.PlayerDirection, out string playerDir))
+        {
+            if (Enum.TryParse<Direction>(playerDir, true, out Direction direction))
+            {
+                _playerDirection = direction;
+                SetPlayerDirection(_playerDirection);
+            }
+        }
+    }
+
+    private void SetPlayerDirection(Direction playerDirection)
+    {
+        switch (playerDirection)
+        {
+            case (Direction.Up) :
+                EventHandler.CallMovementEvent(idleUp: true);
+                break;
+            case (Direction.Down) :
+                EventHandler.CallMovementEvent(idleDown: true);
+                break;
+            case (Direction.Left) :
+                EventHandler.CallMovementEvent(idleLeft: true);
+                break;
+            case (Direction.Right) :
+                EventHandler.CallMovementEvent(idleRight: true);
+                break;
+            default :
+                EventHandler.CallMovementEvent();
+                break;
+        }
+    }
+
+    public void ISaveableStoreScene(string sceneName)
+    {
+        // Nothing required here since the player is on the persistent scene
+    }
+
+    public void ISaveableRestoreScene(string sceneName)
+    {
+        // Nothing required here since the player is on the persistent scene
     }
 }

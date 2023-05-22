@@ -12,4 +12,7 @@ public interface ISaveable
 
     void ISaveableRestoreScene(string sceneName);
 
+    GameObjectSave ISaveableSave();
+
+    void ISaveableLoad(GameSave gameSave);
 }

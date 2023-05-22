@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class InventoryManager : SingletonMonobehavior<InventoryManager>
+public class InventoryManager : SingletonMonobehavior<InventoryManager>, ISaveable
 {
+    private UIInventoryBar _inventoryBar;
+
     private Dictionary<int, ItemDetails> ItemDetailsDictionary;
 
     [SerializeField]
@@ -14,8 +16,16 @@ public class InventoryManager : SingletonMonobehavior<InventoryManager>
 
     private int[] _selectedInventoryItem;
 
+    private string _iSaveableUniqueID;
+
+    private GameObjectSave _gameObjectSave;
+
     [HideInInspector]
     public int[] InventoryListCapacityIntArray;
+
+    public string ISaveableUniqueID { get => _iSaveableUniqueID; set => _iSaveableUniqueID = value; }
+
+    public GameObjectSave GameObjectSave { get => _gameObjectSave; set => _gameObjectSave = value; }
 
     public ItemDetails GetItemDetails(int itemCode) => this.ItemDetailsDictionary.TryGetValue(itemCode, out var details) ? details : null;
 
@@ -31,6 +41,24 @@ public class InventoryManager : SingletonMonobehavior<InventoryManager>
 
         CreateInventoryLists();
         CreateItemDetailsDictionary();
+
+        _iSaveableUniqueID = GetComponent<GenerateGUID>().GUID;
+        _gameObjectSave = new GameObjectSave();
+    }
+
+    private void Start()
+    {
+        _inventoryBar = FindObjectOfType<UIInventoryBar>();
+    }
+
+    private void OnEnable()
+    {
+        ISaveableRegister();
+    }
+
+    private void OnDisable()
+    {
+        ISaveableDeregister();
     }
 
     private void CreateInventoryLists()
@@ -150,4 +178,73 @@ public class InventoryManager : SingletonMonobehavior<InventoryManager>
     public void ClearSelectedInventoryItem(InventoryLocation inventoryLocation) => SetSelectedInventoryItem(inventoryLocation, -1);
 
     public int GetSelectedInventoryItem(InventoryLocation inventoryLocation) => _selectedInventoryItem[(int)inventoryLocation];
+
+    public void ISaveableRegister()
+    {
+        SaveLoadManager.Instance.SaveableObjectList.Add(this);
+    }
+
+    public void ISaveableDeregister()
+    {
+        SaveLoadManager.Instance.SaveableObjectList.Remove(this);
+    }
+
+    public void ISaveableStoreScene(string sceneName)
+    {
+        // Nothing required here since the inventory manager is on the persistent scene
+    }
+
+    public void ISaveableRestoreScene(string sceneName)
+    {
+        // Nothing required here since the inventory manager is on the persistent scene
+    }
+
+    public GameObjectSave ISaveableSave()
+    {
+        _gameObjectSave.SceneData.Remove(Global.Scenes.Persistent);
+
+        var sceneSave = new SceneSave();
+
+        // Add inventory lists array to persistent scene save
+        sceneSave.ListInvItemArray = this.InventoryLists;
+
+        // Add inventory list capacity array to persistent scene save
+        sceneSave.IntArrayDictionary.Add(Global.Saves.InventoryListCapacity, this.InventoryListCapacityIntArray);
+
+        // Add scene save for gameobject
+        _gameObjectSave.SceneData.Add(Global.Scenes.Persistent, sceneSave);
+
+        return _gameObjectSave;
+    }
+
+    public void ISaveableLoad(GameSave gameSave)
+    {
+        if (!gameSave.GameObjectData.TryGetValue(_iSaveableUniqueID, out var gameObjectSave))
+            return;
+
+        if (!gameObjectSave.SceneData.TryGetValue(Global.Scenes.Persistent, out var sceneSave))
+            return;
+
+        if (sceneSave.ListInvItemArray == null)
+            return;
+
+        this.InventoryLists = sceneSave.ListInvItemArray;
+
+        for (int x = 0; x < Enum.GetNames(typeof(InventoryLocation)).Length; x++)
+        {
+            EventHandler.CallInventoryUpdatedEvent((InventoryLocation)x, this.InventoryLists[x]);
+        }
+
+        // Clear any items player was carrying
+        Player.Instance.ClearCarriedItem();
+
+        // Clear any highlights on inventory bar
+        _inventoryBar.ClearHighlightOnInventorySlots();
+
+        // int array dictionary exists for scene
+        if (sceneSave.IntArrayDictionary.TryGetValue(Global.Saves.InventoryListCapacity, out int[] inventoryCapacityArray))
+        {
+            this.InventoryListCapacityIntArray = inventoryCapacityArray;
+        }
+    }
 }
