@@ -182,7 +182,7 @@ public enum GridBoolProperty
 
     IsPath = 3,
 
-        IsNPCObstacle = 4
+    IsNPCObstacle = 4
 }
 
 public enum HarvestActionEffect
@@ -198,4 +198,15 @@ public enum HarvestActionEffect
     Reaping = 4,
 
     None = 5
+}
+
+public enum Facing
+{
+    None = 0,
+
+    Front = 1,
+
+    Back = 2,
+
+    Right = 3
 }
