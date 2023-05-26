@@ -80,7 +80,7 @@ public class ApplyCharacterCustomization : MonoBehaviour
 
     private void ProcessCustomization()
     {
-        return;
+        /*
         ProcessGender();
 
         ProcessShirt();
@@ -88,6 +88,7 @@ public class ApplyCharacterCustomization : MonoBehaviour
         ProcessArms();
 
         MergeCustomizations();
+        */
     }
 
     private void ProcessGender()

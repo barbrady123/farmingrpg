@@ -74,6 +74,18 @@ public class GridPropertiesManager : SingletonMonobehavior<GridPropertiesManager
         }
     }
 
+    public (Vector2Int gridDimensions, Vector2Int gridOrigin) GetGridDimensions(SceneName sceneName)
+    {
+        var grid = _so_GridPropertiesArray.FirstOrDefault(x => x.SceneName == sceneName);
+        if (grid == null)
+            throw new Exception($"Unknown SceneName '{sceneName}' encountered");
+
+        return (
+            new Vector2Int(grid.GridWidth, grid.GridHeight),
+            new Vector2Int(grid.OriginX, grid.OriginY)
+        );
+    }
+
     public void DisplayWateredGround(GridPropertyDetails gridPropertyDetails)
     {
         if (gridPropertyDetails.DaysSinceWatered >= 0)

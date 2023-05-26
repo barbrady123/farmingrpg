@@ -28,4 +28,6 @@ public static class Extensions
     public static void SetImageTransparent(this SpriteRenderer renderer) => renderer.color = renderer.color.AsTransparent();
 
     public static void SetImageOpaque(this SpriteRenderer renderer) => renderer.color = renderer.color.AsOpaque();
+
+    public static Vector3Int ToVector3Int(this Vector2Int vector2) => new Vector3Int(vector2.x, vector2.y, 0);
 }
