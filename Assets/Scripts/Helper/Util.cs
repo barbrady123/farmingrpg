@@ -45,6 +45,19 @@ public static class Util
         }
     }
 
+    public static (bool isRight, bool isLeft, bool isUp, bool IsDown) DirectionToFlag(Direction direction)
+    {
+        if (direction == Direction.Right)
+            return (true, false, false, false);
+        else if (direction == Direction.Left)
+            return (false, true, false, false);
+        else if (direction == Direction.Up)
+            return (false, false, true, false);
+        else if (direction == Direction.Down)
+            return (false, false, false, true);
+        return (false, false, false, false);
+    }
+
     public static (bool isRight, bool isLeft, bool isUp, bool IsDown) Vector3IntDirectionToFlag(Vector3Int direction)
     {
         if (direction == Vector3Int.right)

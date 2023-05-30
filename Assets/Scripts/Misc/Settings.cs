@@ -8,6 +8,8 @@ public static class Settings
     // Tilemap - Grid cell size in unity units
     public const float GridCellSize = 1f;
 
+    public const float GridCellSizeDiagonal = 1.41f;
+
     public static Vector2 CursorSize = Vector2.one;
 
     // Time System
@@ -37,6 +39,9 @@ public static class Settings
 
     public const float AfterCollectAnimationPause = 0.4f;
 
+    // NPC Movement
+    public static float PixelSize = 0.0625f;
+
     // Inventory
     public static int PlayerInitialInventoryCapacity = 24;
 
@@ -47,7 +52,18 @@ public static class Settings
 
     public const int MaxTargetComponentsToDestroyPerReapSwing = 15;
 
-    #region Animation Parameters
+    // NPC Animation Pareters;
+    public static int walkUp = Animator.StringToHash(nameof(walkUp));
+
+    public static int walkDown = Animator.StringToHash(nameof(walkDown));
+
+    public static int walkLeft = Animator.StringToHash(nameof(walkLeft));
+
+    public static int walkRight = Animator.StringToHash(nameof(walkRight));
+
+    public static int eventAnimation = Animator.StringToHash(nameof(eventAnimation));
+
+    #region Player Animation Parameters
     public static int xInput = Animator.StringToHash(nameof(xInput));
 
     public static int yInput = Animator.StringToHash(nameof(yInput));

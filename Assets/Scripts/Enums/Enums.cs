@@ -210,3 +210,14 @@ public enum Facing
 
     Right = 3
 }
+
+public enum Weather
+{
+    Dry = 0,
+
+    Raining = 1,
+
+    Snowing = 2,
+
+    None = 3
+}

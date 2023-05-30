@@ -34,6 +34,8 @@ public class TimeManager : SingletonMonobehavior<TimeManager>, ISaveable
         EventHandler.CallAdvanceGameMinuteEvent(_gameYear, _gameSeason, _gameDay, _gameDayOfWeek, _gameHour, _gameMinute, _gameSecond);
     }
 
+    public TimeSpan GetGameTime() => new TimeSpan(_gameHour, _gameMinute, _gameSecond);
+
     protected override void Awake()
     {
         base.Awake();
