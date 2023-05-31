@@ -221,3 +221,48 @@ public enum Weather
 
     None = 3
 }
+
+public enum SoundName
+{
+    None = 0,
+
+    EffectFootstepSoftGround = 10,
+
+    EffectFootstepHardGround = 20,
+
+    EffectAxe = 30,
+
+    EffectPickaxe = 40,
+
+    EffectScythe = 50,
+
+    EffectHoe = 60,
+
+    EffectWateringCan = 70,
+
+    EffectBasket = 80,
+
+    EffectPickup = 90,
+
+    EffectRustle = 100,
+
+    EffectTreeFalling = 110,
+
+    EffectPlanting = 120,
+
+    EffectPluck = 130,
+
+    EffectStoneShatter = 140,
+
+    EffectWoodSplinters = 150,
+
+    AmbientCountryside1 = 1000,
+
+    AmbientCountrysdie2 = 1010,
+
+    AmbientIndoors1 = 1020,
+
+    MusicCalm3 = 2000,
+
+    MusicCalm1 = 2010
+}

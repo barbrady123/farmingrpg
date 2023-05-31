@@ -96,6 +96,8 @@ public class Crop : MonoBehaviour
             runningAnimation = true;
         }
 
+        AudioManager.Instance.PlaySound(cropDetails.HarvestSound);
+
         // Delete crop from grid properties
         gridPropertyDetails.ClearCropData();
 

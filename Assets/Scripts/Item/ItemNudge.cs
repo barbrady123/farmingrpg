@@ -19,6 +19,11 @@ public class ItemNudge : MonoBehaviour
         StartCoroutine(
             Nudge(
                 gameObject.transform.position.x >= collision.gameObject.transform.position.x));
+
+        if (collision.gameObject.tag == Global.Tags.Player)
+        {
+            AudioManager.Instance.PlaySound(SoundName.EffectRustle);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -29,6 +34,11 @@ public class ItemNudge : MonoBehaviour
         StartCoroutine(
             Nudge(
                 gameObject.transform.position.x <= collision.gameObject.transform.position.x));
+
+        if (collision.gameObject.tag == Global.Tags.Player)
+        {
+            AudioManager.Instance.PlaySound(SoundName.EffectRustle);
+        }
     }
 
     private IEnumerator Nudge(bool isClockwise)

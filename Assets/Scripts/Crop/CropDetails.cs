@@ -47,6 +47,8 @@ public class CropDetails
 
     public int DaysToRegrow;    // days to regrow next crop or -1 if a single crop
 
+    public SoundName HarvestSound;      // The harvest sound for the crop
+
     public bool CanUseToolToHarvestCrop(int toolItemCode) => RequiresHarvestActionsForTool(toolItemCode) != -1;
 
     public int RequiresHarvestActionsForTool(int toolItemCode)

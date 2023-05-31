@@ -11,6 +11,8 @@ public static class Global
         public const string GroundDecoration2 = "GroundDecoration2";
 
         public const string CropsParentTransform = "CropsParentTransform";
+
+        public const string Player = "Player";
     }
 
     public static class Tools

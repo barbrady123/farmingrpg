@@ -13,6 +13,7 @@ public class ItemPickup : MonoBehaviour
 
         if (InventoryManager.Instance.AddItem(InventoryLocation.Player, item, 1))
         {
+            AudioManager.Instance.PlaySound(SoundName.EffectPickup);
             Destroy(collision.gameObject);
         }
     }
